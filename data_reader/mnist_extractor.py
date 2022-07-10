@@ -18,18 +18,22 @@ def mnist_extract_samples(sample_list, is_train=True, file_path=os.path.dirname(
         f_images = open(file_path_extended + '/t10k-images.idx3-ubyte', 'rb')
         f_labels = open(file_path_extended + '/t10k-labels.idx1-ubyte', 'rb')
 
+    #AH: this is getting the number of rows / cols for images
     s1, s2, s3, s4 = f_images.read(4), f_images.read(4), f_images.read(4), f_images.read(4)
     mn_im = unpack('>I', s1)[0]
     num_im = unpack('>I', s2)[0]
     rows_im = unpack('>I', s3)[0]
     cols_im = unpack('>I', s4)[0]
 
+    #AH: this is getting the number of rows / cols for lables
     mn_l = unpack('>I', f_labels.read(4))[0]
     num_l = unpack('>I', f_labels.read(4))[0]
 
+    #AH: initalise empty data array
     data = []
     labels = []
 
+    #AH: For loop to run through every data point
     for sample in sample_list:
         f_images.seek(16 + sample * rows_im * cols_im)
         f_labels.seek(8 + sample)
@@ -45,6 +49,11 @@ def mnist_extract_samples(sample_list, is_train=True, file_path=os.path.dirname(
     f_images.close()
     f_labels.close()
 
+    #AH: return those lists!
+    #print("Data 1")
+    #print(data[1])
+    #print("Label 1, 2, 3, 4, 5")
+    #print(labels[1])
     return data, labels
 
 

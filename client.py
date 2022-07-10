@@ -14,7 +14,7 @@ from config import SERVER_ADDR, SERVER_PORT, dataset_file_path
 sock = socket.socket()
 sock.connect((SERVER_ADDR, SERVER_PORT))
 
-print('---------------------------------------------------------------------------')
+('---------------------------------------------------------------------------')
 
 batch_size_prev = None
 total_data_prev = None
@@ -42,21 +42,28 @@ try:
         model2 = get_model(model_name)   # Used for computing loss_w_prev_min_loss for stochastic gradient descent,
                                          # so that the state of model can be still used by control algorithm later.
 
+        #AH: create Neural Model!
         if hasattr(model, 'create_graph'):
             model.create_graph(learning_rate=step_size)
+        # deactivate second model!
         if hasattr(model2, 'create_graph'):
             model2.create_graph(learning_rate=step_size)
 
+    #AH: here we get the data!!!
         # Assume the dataset does not change
+        #NOTE: we always use same dataset, we just read different columns?
         if read_all_data_for_stochastic or batch_size >= total_data:
             if batch_size_prev != batch_size or total_data_prev != total_data or (batch_size >= total_data and sim_prev != sim):
                 print('Reading all data samples used in training...')
                 train_image, train_label, _, _, _ = get_data(dataset, total_data, dataset_file_path, sim_round=sim)
+        
+        #AH: note here is the data - we use sim_round as a parameter to define from where we take the data! -> every round and every node has different data right?
 
         batch_size_prev = batch_size
         total_data_prev = total_data
         sim_prev = sim
 
+        #AH: note: I think if we 
         if batch_size >= total_data:
             sampler = None
             train_indices = indices_this_node
@@ -67,10 +74,15 @@ try:
 
         data_size_local = len(indices_this_node)
 
+        #AH: can I define here that I don't want to have an control algorithm in place?
+        #AH: comment the following out!
         if isinstance(control_alg_server_instance, ControlAlgAdaptiveTauServer):
             control_alg = ControlAlgAdaptiveTauClient()
+            #AH: just comment out this if else loop and say control_alg = none for everyone!
+            # AH: Question: do I also need to comment out the control_alg in server? What is this algorithm doing?
         else:
             control_alg = None
+        #control_alg = None #AH: added!
 
         w_prev_min_loss = None
         w_last_global = None
@@ -78,6 +90,7 @@ try:
 
         msg = ['MSG_DATA_PREP_FINISHED_CLIENT_TO_SERVER']
         send_msg(sock, msg)
+        #AH: set up done!
 
         while True:
             print('---------------------------------------------------------------------------')
@@ -89,9 +102,22 @@ try:
             is_last_round = msg[3]
             prev_loss_is_min = msg[4]
 
+            print("Message received from server with the following info")
+            #print("w_global")
+            #print(w_global)
+            print("tau")
+            print(tau_config)
+            #print("is_last_round")
+            #print(is_last_round)
+            print("prev_loss_is_min")
+            print(prev_loss_is_min)
+
             if prev_loss_is_min or ((w_prev_min_loss is None) and (w_last_global is not None)):
                 w_prev_min_loss = w_last_global
+                # is this a function which makes sure I always take the parameter which were best before?
 
+            #AH: this will be gone then when we don't have the control_alg
+            # comment out
             if control_alg is not None:
                 control_alg.init_new_round(w)
 
@@ -104,33 +130,39 @@ try:
 
             tau_actual = 0
 
+            #AH: why do we for loop through this?
             for i in range(0, tau_config):
+                print("in tau for loop")
 
                 # When batch size is smaller than total data, read the data here; else read data during client init above
                 if batch_size < total_data:
-                    # When using the control algorithm, we want to make sure that the batch in the last local iteration
-                    # in the previous round and the first iteration in the current round is the same,
-                    # because the local and global parameters are used to
-                    # estimate parameters used for the adaptive tau control algorithm.
-                    # Therefore, we only change the data in minibatch when (i != 0) or (sample_indices is None).
-                    # The last condition with tau <= 1 is to make sure that the batch will change when tau = 1,
-                    # this may add noise in the parameter estimation for the control algorithm,
-                    # and the amount of noise would be related to NUM_ITERATIONS_WITH_SAME_MINIBATCH.
+                    print("batch size < total data")
+                     # When using the control algorithm, we want to make sure that the batch in the last local iteration
+                     # in the previous round and the first iteration in the current round is the same,
+                     # because the local and global parameters are used to
+                     # estimate parameters used for the adaptive tau control algorithm.
+                     # Therefore, we only change the data in minibatch when (i != 0) or (sample_indices is None).
+                     # The last condition with tau <= 1 is to make sure that the batch will change when tau = 1,
+                     # this may add noise in the parameter estimation for the control algorithm,
+                     # and the amount of noise would be related to NUM_ITERATIONS_WITH_SAME_MINIBATCH.
 
+                     #if the thing is the type ControlAlgAdaptiveTauClient!
+                     # AH: this is coming from ControlAlgAdaptiveTauClient!
                     if (not isinstance(control_alg, ControlAlgAdaptiveTauClient)) or (i != 0) or (train_indices is None) \
-                            or (tau_config <= 1 and
-                                (last_batch_read_count is None or
-                                 last_batch_read_count >= num_iterations_with_same_minibatch_for_tau_equals_one)):
+                                or (tau_config <= 1 and
+                                 (last_batch_read_count is None or
+                                  last_batch_read_count >= num_iterations_with_same_minibatch_for_tau_equals_one)):
 
-                        sample_indices = sampler.get_next_batch()
+                         sample_indices = sampler.get_next_batch()
+                         print("in if loop tau")
 
-                        if read_all_data_for_stochastic:
-                            train_indices = sample_indices
-                        else:
-                            train_image, train_label = get_data_train_samples(dataset, sample_indices, dataset_file_path)
-                            train_indices = range(0, min(batch_size, len(train_label)))
+                         if read_all_data_for_stochastic:
+                             train_indices = sample_indices
+                         else:
+                             train_image, train_label = get_data_train_samples(dataset, sample_indices, dataset_file_path)
+                             train_indices = range(0, min(batch_size, len(train_label)))
 
-                        last_batch_read_count = 0
+                         last_batch_read_count = 0
 
                     last_batch_read_count += 1
 
@@ -141,11 +173,13 @@ try:
                         # Note: This has to follow the gradient computation line above
                         loss_last_global = model.loss_from_prev_gradient_computation()
                         print('*** Loss computed from previous gradient computation')
+                        print("loss: ", loss_last_global)
                     except:
                         # Will get an exception if the model does not support computing loss
                         # from previous gradient computation
                         loss_last_global = model.loss(train_image, train_label, w, train_indices)
                         print('*** Loss computed from data')
+                        print("loss:", loss_last_global)
 
                     w_last_global = w
 
@@ -177,9 +211,24 @@ try:
             msg = ['MSG_WEIGHT_TIME_SIZE_CLIENT_TO_SERVER', w, time_all_local, tau_actual, data_size_local,
                    loss_last_global, loss_w_prev_min_loss]
             send_msg(sock, msg)
+            print("node - send message information to server")
+            print("w - probably weight:")
+            print(w)
+            print("time all local")
+            print(time_all_local)
+            print("tau_actual")
+            print(tau_actual)
+            print("data size local")
+            print(data_size_local)
+            print("loss_last_global = model.loss_from_prev_gradient_computation")
+            print(loss_last_global)
+            print("loss_w_prev_min_loss = model2.loss(train_image, train_label, w_prev_min_loss, train_indices)")
+            print(loss_w_prev_min_loss)
 
             if control_alg is not None:
                 control_alg.send_to_server(sock)
+                #AH: this sends a message with control algorithm information, dont think this will usually be executed
+                print("control algorithm send to server")
 
             if is_last_round:
                 break

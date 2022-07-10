@@ -22,6 +22,8 @@ else:
     use_fixed_averaging_slots = False
 
 if batch_size < total_data:   # Read all data once when using stochastic gradient descent
+
+    #AH: here uses get Data from data_reader!!!
     train_image, train_label, test_image, test_label, train_label_orig = get_data(dataset, total_data, dataset_file_path)
 
     # This function takes a long time to complete,
@@ -50,6 +52,9 @@ else:
 
 for sim in sim_runs:
 
+    print("we are in sim round")
+    print(sim)
+
     if batch_size >= total_data:  # Read data again for different sim. round
         train_image, train_label, test_image, test_label, train_label_orig = get_data(dataset, total_data, dataset_file_path, sim_round=sim)
 
@@ -58,7 +63,11 @@ for sim in sim_runs:
 
     for case in case_range:
 
+        print("we are in case", case)
+
         for tau_setup in tau_setup_all:
+
+            print("we are in tau_setup", tau_setup)
 
             stat.init_stat_new_global_round()
 
@@ -95,11 +104,19 @@ for sim in sim_runs:
                        use_min_loss, sim]
                 send_msg(client_sock_all[n], msg)
 
+                print("client no")
+                print(n)
+                print("client has the following indices")
+                print(indices_this_node)
+
             print('All clients connected')
 
             # Wait until all clients complete data preparation and sends a message back to the server
             for n in range(0, n_nodes):
                 recv_msg(client_sock_all[n], 'MSG_DATA_PREP_FINISHED_CLIENT_TO_SERVER')
+
+
+            # AH: Can I print in here what the messages send the client?
 
             print('Start learning')
 
@@ -126,6 +143,16 @@ for sim in sim_runs:
                 time_total_all_start = time.time()
 
                 for n in range(0, n_nodes):
+
+                    # AH: Print here the information
+                    print("Here w_global is send")
+                    print(w_global)
+                    print("Tau Config is send")
+                    print(tau_config)
+                    print(is_last_round)
+                    print(prev_loss_is_min)
+
+
                     msg = ['MSG_WEIGHT_TAU_SERVER_TO_CLIENT', w_global, tau_config, is_last_round, prev_loss_is_min]
                     send_msg(client_sock_all[n], msg)
 
@@ -133,6 +160,7 @@ for sim in sim_runs:
 
                 print('Waiting for local iteration at client')
 
+                # please print all this?
                 w_global = np.zeros(dim_w)
                 loss_last_global = 0.0
                 loss_w_prev_min_loss = 0.0
@@ -148,12 +176,17 @@ for sim in sim_runs:
                     # ['MSG_WEIGHT_TIME_SIZE_CLIENT_TO_SERVER', w, time_all_local, tau_actual, data_size_local,
                     # loss_last_global, loss_w_prev_min_loss]
                     w_local = msg[1]
+                    
+                    print("local weight", w_local)
+
                     time_all_local = msg[2]
                     tau_actual = max(tau_actual, msg[3])  # Take max of tau because we wait for the slowest node
                     data_size_local = msg[4]
                     loss_local_last_global = msg[5]
                     loss_local_w_prev_min_loss = msg[6]
 
+                    # print here 
+                    # analaser.newdata(w_local,ns)
                     w_global += w_local * data_size_local
                     data_size_local_all.append(data_size_local)
                     data_size_total += data_size_local
@@ -166,6 +199,8 @@ for sim in sim_runs:
                             received_loss_local_w_prev_min_loss = True
 
                 w_global /= data_size_total
+
+                print("W global is now", w_global)
 
                 if True in np.isnan(w_global):
                     print('*** w_global is NaN, using previous value')

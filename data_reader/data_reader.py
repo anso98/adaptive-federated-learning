@@ -1,6 +1,8 @@
 import os
 import sys
 
+#AH: this function gets the data from the dataset, using the mnist extractor (if we use the mnist dataset)
+
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from util.utils import get_index_from_one_hot_label, get_even_odd_from_one_hot_label
@@ -31,14 +33,19 @@ def get_data(dataset, total_data, dataset_file_path=os.path.dirname(__file__), s
         test_image, test_label = mnist_extract(start_index_test, total_data_test, False, dataset_file_path)
 
         # train_label_orig must be determined before the values in train_label are overwritten below
+        #AH: why are the labels overwritten?
         train_label_orig=[]
         for i in range(0, len(train_label)):
             label = get_index_from_one_hot_label(train_label[i])
+            #print("hotLabelFunction")
+            #print(label)
             train_label_orig.append(label[0])
 
         if dataset == 'MNIST_ORIG_EVEN_ODD':
             for i in range(0, len(train_label)):
                 train_label[i] = get_even_odd_from_one_hot_label(train_label[i])
+                #print("Odd / Even / Function")
+                #print(train_label[i])
 
         if dataset == 'MNIST_ORIG_EVEN_ODD':
             for i in range(0, len(test_label)):
@@ -91,3 +98,10 @@ def get_data_train_samples(dataset, samples_list, dataset_file_path=os.path.dirn
                         'also confirm that dataset name is correct.')
 
     return train_image, train_label
+
+
+if __name__ == '__main__':
+    dataset = "MNIST_ORIG_EVEN_ODD"
+    total_data = 30000
+    dataset_file_path = "/Users/Anso/Code/Imperial_College/IndividualProject/adaptive-federated-learning/datasets"
+    get_data(dataset, total_data, dataset_file_path)
