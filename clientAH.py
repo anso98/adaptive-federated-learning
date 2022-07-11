@@ -1,5 +1,7 @@
 import socket
 import struct
+import random
+import numpy as np
 from configAH import *
 from data_reader.data_reader import get_data
 from models.get_model import get_model
@@ -14,7 +16,6 @@ sock.connect((SERVER_ADDR, SERVER_PORT))
 ('---------------------------------------------------------------------------')
 
 try:
-    # here was another while loop don't think it makes sense!
 
     # receive message and store information
     msg = recv_msg(sock, 'MSG_INIT_SERVER_TO_CLIENT')
@@ -28,9 +29,14 @@ try:
     total_data = msg[5]
     indices_this_node = msg[6]
     number_this_node = msg[7]
+    client_malicious = msg[8]
+    percentage_maliciousness = msg[9]
 
     print("This node is node number ", msg[7])
-
+    if(client_malicious):
+        print("This node is malicious to", percentage_maliciousness, "percent")
+    else:
+        print("This node is not malicious")
 
     # Initialise model
     model = get_model(model_name)
@@ -45,7 +51,6 @@ try:
     # Prepare Data in Batch
     sim = 1 #just for now, find out what it is
     sampler = MinibatchSampling(indices_this_node, batch_size, sim)
-
 
     data_size_local = len(indices_this_node)
 
@@ -66,7 +71,6 @@ try:
         w = msg[1]
         prev_loss_is_min = msg[2] # lets see why I need this?
 
-
         # Store w_last_gloabl as w_min_loss if thats the case
         if prev_loss_is_min or ((w_prev_min_loss is None) and (w_last_global is not None)):
             w_prev_min_loss = w_last_global
@@ -77,10 +81,39 @@ try:
 
         # get new training data
         train_indices = sampler.get_next_batch()
-        print(train_indices)
+
+        # If node malicious, then switch train_labels of train_indicies! 
+        if(client_malicious):
+            print("This node is a malicious with a percentage of", percentage_maliciousness)
+
+            # create a copy and shuffle indicies to maintain randomness
+            randomised_indicies = train_indices
+            random.shuffle(randomised_indicies)
+            
+            # take the percentage (given by server) of malicious data we need
+            number_of_indicies = len(randomised_indicies)
+            number_of_malicious_indicies_needed = round(number_of_indicies * percentage_maliciousness)
+
+            #Create malicious list, list to match type of indices
+            malicious_indicies = []
+            
+            # Create the list of indicies to be changed
+            for i in range(0, int(number_of_malicious_indicies_needed)):
+                malicious_indicies.append(randomised_indicies[i])
+            
+            for element in malicious_indicies:
+                # switch 1 and -1 
+                train_label[element] = train_label[element] * -1
 
         # calculate new w
         grad = model.gradient(train_image, train_label, w, train_indices)
+
+        # Change it back after to restore original dataset (also for loss calculation)
+        if(client_malicious):
+
+            for element in malicious_indicies:
+                # switch 1 and -1 back 
+                train_label[element] = train_label[element] * -1
 
         # Calculate old loss - before updating w!
         loss_last_global = model.loss(train_image, train_label, w, train_indices)

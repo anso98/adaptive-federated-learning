@@ -10,6 +10,36 @@ import numpy as np
 # Tempory define case here, later in an analyser overview to switch between them!!
 case = 0
 
+#check here if full analysis should be ran or just simple test case
+if (full_analysis_all_cases == True):
+    xxx = 0
+
+execute_next_case = True
+
+while(execute_next_case):
+
+    #NOTE: need to thinj about how to connect and disconnect, or leave connection but just send new parameters and model? Not probably does not make sense, just new connection is the easiest
+
+    if(full_analysis_all_cases == True):
+        case = -1  #define invalid starting case -> will iterate in next line
+        case, number_of_malicious_nodes, percentage_malicious_data = basic_analysis_cases(case) #adds one case, returns [case_no_for_analysis, number_of_malicious_nodes, percentage_malicious_data]
+    else:
+        execute_next_case = False
+        case = case_no_for_analysis_config #comes from Config File, set there
+        # THINK ABOUT HOW TO DO IT IF ITS NOT A CASE; MAYBE DO NOT DEFINE? BUT DOES NOT WORK AS ITS INPUT FOR FUNCTIONS
+        number_of_malicious_nodes = number_of_malicious_nodes_config
+        percentage_malicious_data = percentage_malicious_data_config
+
+    print("-------------------------------------")
+    print("-------------------------------------")
+    print("-------------------------------------")
+    print("We are in case number", case)
+    print("Number of malicious nodes will be", number_of_malicious_nodes)
+    print("Percentage of malicious data in those nodes will be", percentage_malicious_data)
+    print("Start Set up:")
+
+# ADD all of this in while loop!
+
 # Get Data
 train_image, train_label, test_image, test_label, train_label_orig = get_data(dataset, total_data, dataset_file_path)
 
@@ -51,19 +81,8 @@ while len(client_sock_all) < n_nodes:
 
     client_sock_all.append(client_sock)
 
-    # note in here send, if client is malicious or not! and depending on this change for loop - send two bools: malicious or not malicios and percentage of maliciousnes (if malcious)
-
-# An Stelle zwei for loops könnte ich auch eine liste machen für jeden case:
-# this_node = case_list[n]
-# if(this_node ==
-
 #send information to client to initialise!
-
-number_of_malicious_nodes = 1
-percentage_of_maliciousness = 0
-client_malicious_list = [True, False, False, False, False]
-
-
+node_counter = 0
 
 # Old Version
 #for n in range(0, n_nodes):
@@ -74,35 +93,45 @@ client_malicious_list = [True, False, False, False, False]
     #        batch_size, total_data, indices_this_node, number_this_node]
     #send_msg(client_sock_all[n], msg)
 
-
 # For Loop for health nodes
-for n in range(0, n_nodes):
-
-    #maybe also go back to other version with! 
-    node_counter = 0
-    client_malicious = False
-    # Think about it!!
+for n in range(0, (n_nodes - number_of_malicious_nodes)):
 
     # Initialise node and their parameters
-    number_this_node = n
-    indices_this_node = indices_each_node_case[case_to_use][n]
-    
-    # healthy nodes are not malicious
-    client_malicious = client_malicious_list[n]
+    number_this_node = node_counter
+    indices_this_node = indices_each_node_case[case_to_use][node_counter]
 
-    if(client_malicious):
-        percentage_of_maliciousness = 0
+    # healthy nodes are not malicious
+    client_malicious = False
+    percentage_of_maliciousness = 0
 
     # Send data 
     msg = ['MSG_INIT_SERVER_TO_CLIENT', model_name, dataset, step_size,
-            batch_size, total_data, indices_this_node, number_this_node, client_malcious, percentage_of_maliciousness]
-    send_msg(client_sock_all[n], msg)
+            batch_size, total_data, indices_this_node, number_this_node, client_malicious, percentage_of_maliciousness]
+    send_msg(client_sock_all[node_counter], msg)
+
+    # iterate node Counter
+    node_counter = node_counter + 1
+    print(node_counter)
+
 
 # For Loop for malicious nodes
-for n in range(0, number_of_nodes_malicious):
-    #thest 
-    # Maybe don't need this, see other idea!!
-    hi = 0
+for n in range(0, number_of_malicious_nodes):
+
+    # Initialise node and their parameters
+    number_this_node = node_counter
+    indices_this_node = indices_each_node_case[case_to_use][node_counter]
+
+    # malicious nodes & there percentage of maliciousness
+    client_malicious = True
+    percentage_of_maliciousness = percentage_malicious_data
+
+    # Send data 
+    msg = ['MSG_INIT_SERVER_TO_CLIENT', model_name, dataset, step_size,
+            batch_size, total_data, indices_this_node, number_this_node, client_malicious, percentage_of_maliciousness]
+    send_msg(client_sock_all[node_counter], msg)
+
+    # iterate node Counter
+    node_counter = node_counter + 1
 
 
 # Receive messages from clients that data prep is done!
