@@ -15,7 +15,7 @@ SERVER_ADDR= 'localhost'   # When running in a real distributed setting, change 
 SERVER_PORT = 51000
 #sim_runs = 5 # I am defining it rn as the number of times the central server receives an update from it's clients # don't need sim rounds right now!
 
-max_rounds = 500
+max_rounds = 100
 
 # Maliciousness
 number_of_malicious_nodes_config = 1
@@ -32,6 +32,8 @@ full_analysis_all_cases = True #change to false if you manually want to test a s
 # write different cases: 
 case_no_for_analysis_config = 0
 
+#IMPORTANT' THIS IS HARDCODED RIGHT NOW; CHANGE IF NUMBER OF CASES CHANGES
+highest_case = 25
 
 
 def basic_analysis_cases(previous_case):
