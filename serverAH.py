@@ -72,6 +72,7 @@ while(execute_next_case):
     w_global_init = model.get_init_weight(dim_w)
     w_global = w_global_init
 
+    print("size w: ", len(w_global))
     # Q: do I need this?
     # initalise variables as in server
     w_global_min_loss = None
@@ -131,6 +132,17 @@ while(execute_next_case):
         # iterate node Counter
         node_counter = node_counter + 1
 
+    # Safe in an array which nodes are healthy and which nodes not
+    which_node_malicious_array = np.zeros((n_nodes))
+    var_until_health = (n_nodes - number_of_malicious_nodes)
+    for i in range(0, var_until_health):
+        which_node_malicious_array[i] = False
+
+    for i in range(var_until_health, n_nodes):
+        which_node_malicious_array[i] = True
+    
+    print("nodes malicious", which_node_malicious_array)
+
     # Print information
     if(number_of_malicious_nodes != 0):
         print(number_of_malicious_nodes, "malicious nodes have received initial data for case", case)
@@ -147,7 +159,7 @@ while(execute_next_case):
 
     #Start Analyser
     number_of_parameters = len(w_global)
-    analyser = Analayser(n_nodes, number_of_parameters, max_rounds, case, number_of_malicious_nodes, percentage_malicious_data, full_analysis_all_cases, highest_case)
+    analyser = Analayser(n_nodes, number_of_parameters, max_rounds, case, number_of_malicious_nodes, percentage_malicious_data, full_analysis_all_cases, highest_case, which_node_malicious_array)
 
     while True:
 
@@ -182,29 +194,14 @@ while(execute_next_case):
             number_this_node = msg[4]
 
             #note: Tiffany did the w_global with the size of the local data (antteilig), I rather would do it equaliy, to test my model later! So changed this! (see in server.py)
-            #old:
-            #w_global += w_local * data_size_local
-            #data_size_local_all.append(data_size_local)
-            #data_size_total += data_size_local
-
             w_global += w_local
-            
-            # this is the loss calculation!
-            #old:
-            #loss_last_global += loss_local_last_global * data_size_local
-            # Question: why time data_size_total - if I understand correctly this will only be the batch size?
             loss_last_global += loss_local_last_global
 
             # Analyser code!
             analyser.newData(w_local, number_this_node)
 
-        #old:
-        #w_global /= data_size_total
         w_global /= n_nodes
         analyser.newData(w_global, n_nodes)
-
-        #old:
-        #loss_last_global /= data_size_total
         loss_last_global /= n_nodes
 
         #Defensive Programming:
@@ -227,9 +224,6 @@ while(execute_next_case):
         # CHECK WITH TIFFANY THOSE VALUES _ WHY??
         print("Loss of previous global value (from nodes): " + str(loss_last_global))
         print("Minimum loss (from nodes): " + str(loss_min), "in round", i_min_loss)
-
-        # note apparently we are using the old w to calculate a loss in client and then take this as a value! Which means that the last learning round is never fully accurat. 
-        # Does it not make more sense to make the evaluation in here - just check with some of the test data and then calculate loss / accuracy?
 
         # In here evaluate loss and accuracy with test data!
         loss_this_global = model.loss(test_image, test_label, w_global)

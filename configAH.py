@@ -1,8 +1,8 @@
 #Config 
 model_name = 'ModelSVMSmooth'
-batch_size = 100  # 100  # Value for stochastic gradient descent
+batch_size = 200  # 100  # Value for stochastic gradient descent
 total_data = 30000  # 60000  #Value for stochastic gradient descent
-step_size = 0.01
+step_size = 0.01 #0.01 before
 dataset = "MNIST_ORIG_EVEN_ODD"
 dataset_file_path = "/Users/Anso/Code/Imperial_College/IndividualProject/adaptive-federated-learning/datasets"
 n_nodes = 5  # Specifies the total number of clients
@@ -10,12 +10,12 @@ MAX_CASE = 4  # Specifies the maximum number of cases, this should be a constant
 # Note: I don't understand why 4 cases - why do we need this!
 # See Jupyter notebook for the different legth of data!
 # Will use case 1!
-case_to_use = 1 # use second case
+case_to_use = 0 # use second case
 SERVER_ADDR= 'localhost'   # When running in a real distributed setting, change to the server's IP address
 SERVER_PORT = 51000
 #sim_runs = 5 # I am defining it rn as the number of times the central server receives an update from it's clients # don't need sim rounds right now!
 
-max_rounds = 100
+max_rounds = 250
 
 # Maliciousness
 number_of_malicious_nodes_config = 1
@@ -132,3 +132,61 @@ def basic_analysis_cases(previous_case):
         percentage_malicious_data = 1
 
     return case_no_for_analysis, number_of_malicious_nodes, percentage_malicious_data
+
+
+def get_labeling_of_case(casenumber):
+    result = ''
+    if casenumber == 0:
+        return "no malicious node"
+    if casenumber == 1:
+        return "1 mal. node (20%)"
+    if casenumber == 2:
+        return "1 mal. node (40%)"
+    if casenumber == 3:
+        return "1 mal. node (60%)"
+    if casenumber == 4:
+        return "1 mal. node (80%)"
+    if casenumber == 5:
+        return "1 mal. node (100%)"
+    if casenumber == 6:
+        return "2 mal. node (20%)"
+    if casenumber == 7:
+        return "2 mal. node (40%)"
+    if casenumber == 8:
+        return "2 mal. node (60%)"
+    if casenumber == 9:
+        return "2 mal. node (80%)"
+    if casenumber == 10:
+        return "2 mal. node (100%)"   
+    if casenumber == 11:
+        return "3 mal. node (20%)"
+    if casenumber == 12:
+        return "3 mal. node (40%)"
+    if casenumber == 13:
+        return "3 mal. node (60%)"
+    if casenumber == 14:
+        return "3 mal. node (80%)"
+    if casenumber == 15:
+        return "3 mal. node (100%)" 
+    if casenumber == 16:
+        return "4 mal. node (20%)"
+    if casenumber == 17:
+        return "4 mal. node (40%)"
+    if casenumber == 18:
+        return "4 mal. node (60%)"
+    if casenumber == 19:
+        return "4 mal. node (80%)"
+    if casenumber == 20:
+        return "4 mal. node (100%)"    
+    if casenumber == 21:
+        return "5 mal. node (20%)"
+    if casenumber == 22:
+        return "5 mal. node (40%)"
+    if casenumber == 23:
+        return "5 mal. node (60%)"
+    if casenumber == 24:
+        return "5 mal. node (80%)"
+    if casenumber == 25:
+        return "5 mal. node (100%)"
+    else:
+        return "Not in range"

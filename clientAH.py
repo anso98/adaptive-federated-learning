@@ -17,7 +17,7 @@ sock.connect((SERVER_ADDR, SERVER_PORT))
 
 try:
 
-    # Need this While loop for the different cases!
+    # Need this while loop for the different cases!
     while(True):
 
         # receive message and store information
@@ -92,6 +92,7 @@ try:
             # If node malicious, then switch train_labels of train_indicies! 
             if(client_malicious):
 
+                print("Check I am in malicious indicies creation loop")
                 # create a copy and shuffle indicies to maintain randomness
                 randomised_indicies = train_indices
                 random.shuffle(randomised_indicies)
@@ -141,7 +142,6 @@ try:
                 print("Client malicious (", (percentage_maliciousness)*100, "%)")
             else:
                 print("Client not malicious")
-
 
             # send message to server
             # please see question to data_size_local!
