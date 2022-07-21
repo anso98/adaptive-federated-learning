@@ -139,10 +139,7 @@ class Analayser:
         for i in range(0, self.number_of_nodes):
             temp_all_distances += ((self.aggregated_weights[i][self.round_tracker] - self.mean_weight_per_round[self.round_tracker]) ** 2)
         std_this_round = math.sqrt(temp_all_distances / (self.number_of_nodes))
-
         self.std_per_round[self.round_tracker] = std_this_round
-
-        print("Std of this round is: ", self.std_per_round[self.round_tracker])
         
         #make all node_updates false again
         for i in range(0, self.number_of_nodes):
@@ -189,67 +186,89 @@ class Analayser:
         ########################################
 
         ### Plot the different weights ###
-        weights_graph = os.path.join(folder_path, 'weights_graph')
-        fig1 = plt.plot(self.global_aggregated_weight,label = "Global Model")
-        # Note include here which nodes are malicious!!
+        weights_graph = os.path.join(folder_path, 'average_model_param')
+            #PLOT
+        plt.plot(self.global_aggregated_weight,label = "Global Model")
         for i in range(0, self.number_of_nodes):
             if(self.which_node_malicious_array[i] == True):
                 this_label = "Node " + str(i+1) + " (malicious)" #start counting by 1
             else:
                 this_label = "Node " + str(i+1) + " (healthy)" #start counting by 1
-            fig1 = plt.plot(self.aggregated_weights[i], label = this_label)
-        plt.title(str(self.percentage_of_malicious_nodes) + "% malicious nodes (" + str(self.percentage_malicious_data*100) + "% malicious data) - " +str(self.number_of_nodes) + " nodes", fontsize = 'medium')
-        plt.suptitle("Average model parameter development of different nodes (Case " + str(self.case) + ")", fontsize = 'large')
-        fig1 = plt.xlabel("FL Update Round")
-        fig1 = plt.ylabel("Average model parameter (of 784 param)")
-        fig1 = plt.legend(loc = "best")
-        fig1 = plt.grid(axis="y", linewidth=0.5)
-        fig1 = plt.savefig(weights_graph)
+            plt.plot(self.aggregated_weights[i], label = this_label)
+            #TITLE
+        plt.title(str(self.percentage_of_malicious_nodes) + "% malicious nodes (" + str(self.percentage_malicious_data*100) + "% malicious data) - " +str(self.number_of_nodes) + " nodes", fontsize = 16)
+        plt.suptitle("Average model parameter of nodes (Case " + str(self.case) + ")", fontsize = 18, fontweight = 'bold') # (from 784 param)
+            #LABLE
+        plt.xlabel("Update Round", fontsize = 14)
+        plt.ylabel("Average model parameter", fontsize = 14)
+        plt.xticks(fontsize=14)
+        plt.yticks(fontsize=14)
+            #LEGEND
+        plt.legend(loc='center left', bbox_to_anchor=(1, 0.5), prop={"size":14}, frameon = False)
+            #GENERAL
+        plt.subplots_adjust(top=0.85)
+        plt.savefig(weights_graph, bbox_inches='tight',pad_inches=0.1)
         #fig1.show()
         plt.clf() #flushes plt
 
 
         ### Plot the Standard derivation ###
         std_graph = os.path.join(folder_path, 'std_graph')
-        fig2 = plt.plot(self.std_per_round)
-        plt.title(str(self.percentage_of_malicious_nodes) + "% malicious nodes (" + str(self.percentage_malicious_data*100) + "% malicious data) - " +str(self.number_of_nodes) + " nodes", fontsize = 'medium')
-        plt.suptitle("standard deviation of weights over update rounds (Case" + str(self.case) + ")", fontsize = 'large')
-        fig2 = plt.xlabel("Update Round")
-        fig2 = plt.ylabel("standard deviation")
-        fig2 = plt.grid(axis="y", linewidth=0.5)
-        fig2 = plt.savefig(std_graph)
-        #fig2.show()
+        plt.plot(self.std_per_round)
+            #TITLE
+        plt.title(str(self.percentage_of_malicious_nodes) + "% malicious nodes (" + str(self.percentage_malicious_data*100) + "% malicious data) - " +str(self.number_of_nodes) + " nodes", fontsize = 16)
+        plt.suptitle("standard deviation of weights over update rounds (Case" + str(self.case) + ")", fontsize = 18, fontweight = 'bold')
+            #LABLE
+        plt.xlabel("Update Round", fontsize = 14)
+        plt.ylabel("standard deviation", fontsize = 14)
+        plt.xticks(fontsize=14)
+        plt.yticks(fontsize=14)
+            #LEGEND
+        plt.legend(loc = "best", frameon = False, prop={"size":14})
+            #GENERAL
+        plt.subplots_adjust(top=0.85)
+        plt.savefig(std_graph, bbox_inches='tight',pad_inches=0.1)
         plt.clf() #flushes plt
 
 
         ### Plot loss ###
         loss_graph = os.path.join(folder_path, 'loss_graph')
         plt.plot(self.loss_per_round, label = "Loss")
-        plt.scatter(self.round_of_min_loss, self.minimum_loss, label = "Minimum Loss over all rounds", color='green') # add min loss
-        plt.title(str(self.percentage_of_malicious_nodes) + "% malicious nodes (" + str(self.percentage_malicious_data*100) + "% malicious data) - " +str(self.number_of_nodes) + " nodes", fontsize = 'medium')
-        plt.suptitle("Loss of global model over update rounds (Case " + str(self.case) + ")", fontsize = 'large')
-        plt.xlabel("Update Round")
-        plt.ylabel("Loss")
-        plt.grid(axis="y", linewidth=0.5)
-        plt.legend(loc = "best")
-        plt.savefig(loss_graph)
-        #plt.show()
+        plt.scatter(self.round_of_min_loss, self.minimum_loss, label = "Minimum Loss", color='green') # add min loss
+            #TITLE
+        plt.title(str(self.percentage_of_malicious_nodes) + "% malicious nodes (" + str(self.percentage_malicious_data*100) + "% malicious data) - " +str(self.number_of_nodes) + " nodes", fontsize = 16)
+        plt.suptitle("Loss of global model over update rounds (Case " + str(self.case) + ")", fontsize = 18, fontweight = "bold")
+            #LABLE
+        plt.xlabel("Update Round", fontsize = 14)
+        plt.ylabel("Loss", fontsize = 14)
+        plt.xticks(fontsize=14)
+        plt.yticks(fontsize=14)
+            #LEGEND
+        plt.legend(loc = "best", frameon = False, prop={"size":14})
+            #GENERAL
+        plt.subplots_adjust(top=0.85)
+        plt.savefig(loss_graph, bbox_inches='tight',pad_inches=0.1)
         plt.clf() # flushes plt
 
 
         ### Plot Accuracy ###
         accuracy_graph = os.path.join(folder_path, 'accuracy_graph')
         fig4 = plt.plot(self.accuracy_per_round, label = "Accuracy")
-        fig4 = plt.scatter(self.round_of_max_accuracy, self.maximum_accuracy, label = "Maximum Accuracy over all rounds", color='green') # add max accuracy
-        plt.title(str(self.percentage_of_malicious_nodes) + "% malicious nodes (" + str(self.percentage_malicious_data*100) + "% malicious data) - " +str(self.number_of_nodes) + " nodes", fontsize = 'medium')
-        plt.suptitle("Accuracy of global model over update rounds (Case " + str(self.case) + ")", fontsize = 'large')
-        fig4 = plt.xlabel("Update Round")
-        fig4 = plt.ylabel("Accuracy")
-        fig4 = plt.legend(loc = "best")
-        fig4 = plt.grid(axis="y", linewidth=0.5)
-        fig4 = plt.savefig(accuracy_graph)
+        fig4 = plt.scatter(self.round_of_max_accuracy, self.maximum_accuracy, label = "Maximum Accuracy", color='green') # add max accuracy
+            #TITLE
+        plt.title(str(self.percentage_of_malicious_nodes) + "% malicious nodes (" + str(self.percentage_malicious_data*100) + "% malicious data) - " +str(self.number_of_nodes) + " nodes", fontsize = 16)
+        plt.suptitle("Accuracy of global model over update rounds (Case " + str(self.case) + ")", fontsize = 18, fontweight = "bold")
+            #LABLES
+        fig4 = plt.xlabel("Update Round", fontsize = 14)
+        fig4 = plt.ylabel("Accuracy", fontsize = 14)
+        plt.xticks(fontsize=14)
+        plt.yticks(fontsize=14)
+            #LEGEND
+        fig4 = plt.legend(loc = "best", frameon = False, prop={"size":14})
+            #GENERAL
+        plt.subplots_adjust(top=0.85)
+        fig4 = plt.savefig(accuracy_graph, bbox_inches='tight',pad_inches=0.1)
         plt.clf() # flushes plt
-        #plt.show()
 
        ####################
         #MSE Calculation
@@ -282,37 +301,48 @@ class Analayser:
                 intermediate_sum /= self.number_of_parameters
                 array_with_accum_mse[k][i] += intermediate_sum
 
+        #Create Folder Path for mse
+        mse_graph = os.path.join(folder_path, 'mse_model_param')
+
         # Plot Array with Accum mse 
-        mse_graph = os.path.join(folder_path, 'mse_graph')
+            #PLOTS
         for i in range(0, self.number_of_nodes):
             if(self.which_node_malicious_array[i] == True):
-                this_label = "Node " + str(i+1) + " (malicious)" #start counting by 1
+                this_label = str(i+1) + " (malicious)" #start counting by 1
             else:
-                this_label = "Node " + str(i+1) + " (healthy)" #start counting by 1
+                this_label = str(i+1) + " (healthy)" #start counting by 1
             fig1 = plt.plot(array_with_accum_mse[i], label = this_label)
-        plt.title(str(self.percentage_of_malicious_nodes) + "% malicious nodes (" + str(self.percentage_malicious_data*100) + "% malicious data) - " +str(self.number_of_nodes) + " nodes", fontsize = 'medium')
-        plt.suptitle("MSE accross all nodes of model parameter (Case " + str(self.case) + ")", fontsize = 'large')
-        fig1 = plt.xlabel("Update Round")
-        fig1 = plt.ylabel("MSE of model parameters")
-        fig1 = plt.legend(loc = "best")
-        fig1 = plt.grid(axis="y", linewidth=0.5)
-        fig1 = plt.savefig(mse_graph)
-        #fig1.show()
-        plt.clf() #flushes plt
+            #TITLE
+        plt.suptitle("MSE of model parameters accross all nodes (Case " + str(self.case) + ")", fontsize = 18, fontweight = "bold")
+        plt.title(str(self.percentage_of_malicious_nodes) + "% malicious nodes (" + str(self.percentage_malicious_data*100) + "% malicious data) - " +str(self.number_of_nodes) + " nodes", fontsize = 16, pad = 20)
+            #LABLE
+        plt.xlabel("Update Round", fontsize = 14)
+        plt.ylabel("MSE of model parameters", fontsize = 14)
+        plt.xticks(fontsize=14)
+        plt.yticks(fontsize=14)
+            #LEGEND
+        plt.legend(loc='center left', bbox_to_anchor=(1, 0.5), prop={"size":14}, frameon = False, title='Node', title_fontsize=16)
+            #GENERAL
+        plt.subplots_adjust(top=0.8)
+        plt.savefig(mse_graph, bbox_inches='tight',pad_inches=0.1)
+        plt.clf() # flushes plt
 
-        # Plot Array with avergae Accum mse
+        # Plot Array with average Accum mse
 
-        #DEFINE VALUE HERE:        
+        #DEFINE AVERAGE VALUE HERE:        
         average_out_of = 10
-
         average_mse_accum = np.zeros((self.number_of_nodes, self.max_rounds))
-        # Note: TAKE FIRST 9 PARAMETERS OUT?
-
-        #Create analyses
+        
+        #Create Moving Averages
         for j in range(0, self.number_of_nodes):
             for i in range(0, self.max_rounds):
                 if (i < average_out_of - 1):
-                    average_mse_accum[j][i] = array_with_accum_mse[j][i]
+                    sum = 0
+                    for k in range(0, i+1):
+                        sum += array_with_accum_mse[j][k]
+                    div_by = i+1
+                    sum /= div_by
+                    average_mse_accum[j][i] = sum
                 else:
                     sum = 0
                     for k in range(i + 1 - average_out_of, i+1):
@@ -320,24 +350,31 @@ class Analayser:
                     sum /= average_out_of
                     average_mse_accum[j][i] = sum
 
+        # Create Path to Graph 
+        average_mse_graph = os.path.join(folder_path,'moving_average_mse_model_param')
+
         # Graph creation
-        average_mse_graph = os.path.join(folder_path, 'average_mse_graph')
+            #PLOT
         for i in range(0, self.number_of_nodes):
             if(self.which_node_malicious_array[i] == True):
-                this_label = "Node " + str(i+1) + " (Malicious)" #start counting by 1
+                this_label = str(i+1) + " (Malicious)" #start counting by 1
             else:
-                this_label = "Node " + str(i+1) + " (healthy)" #start counting by 1
+                this_label = str(i+1) + " (healthy)" #start counting by 1
             fig1 = plt.plot(average_mse_accum[i], label = this_label)
-        plt.title(str(self.percentage_malicious_data) + "% malicious nodes (" + str(self.percentage_malicious_data*100) + "% malicious data) - " +str(self.number_of_nodes) + " nodes", fontsize = 'medium')
-        plt.suptitle("Flattend (10 values) MSE accross all nodes of model parameter (Case " + str(self.case) + ")", fontsize = 'large')
-        fig1 = plt.xlabel("Update Round")
-        fig1 = plt.ylabel("Flattend MSE of model parameter")
-        fig1 = plt.legend(loc = "best")
-        fig1 = plt.grid(axis="y", linewidth=0.5)
-        fig1 = plt.savefig(average_mse_graph)
-        #fig1.show()
-        plt.clf() #flushes plt
-
+            #TITLE
+        plt.suptitle("Moving Average (10 values) MSE of model parameters \n accross all nodes (Case " + str(self.case) + ")", fontsize = 18, fontweight = "bold")
+        plt.title(str(self.percentage_of_malicious_nodes) + "% malicious nodes (" + str(self.percentage_malicious_data*100) + "% malicious data) - " +str(self.number_of_nodes) + " nodes", fontsize = 16, pad = 20)
+            #LABLE
+        plt.xlabel("Update Round", fontsize = 14)
+        plt.ylabel("MSE of model parameters", fontsize = 14)
+        plt.xticks(fontsize=14)
+        plt.yticks(fontsize=14)
+            #LEGEND
+        plt.legend(loc='center left', bbox_to_anchor=(1, 0.5), prop={"size":14}, frameon = False, title='Node', title_fontsize=16)
+            #GENERAL
+        plt.subplots_adjust(top=0.75)
+        plt.savefig(average_mse_graph, bbox_inches='tight',pad_inches=0.1)
+        plt.clf() # flushes plt
 
         ########################################
         # Export everything into csv! 
@@ -353,7 +390,7 @@ class Analayser:
         ####################
 
         # Export Maximum Accuracy
-        accuracy_csv = os.path.join(self.folder_for_csv, 'accuracy.csv')
+        accuracy_csv = os.path.join(self.folder_for_csv, 'max_accuracy.csv')
         with open(accuracy_csv, 'a') as csv:
             #Make a comma if not empty as delimiter
             if not (os.stat(accuracy_csv).st_size == 0):
@@ -362,7 +399,7 @@ class Analayser:
             csv.close()
 
         # Export Minimum Loss
-        loss_csv = os.path.join(self.folder_for_csv, 'loss.csv')
+        loss_csv = os.path.join(self.folder_for_csv, 'min_loss.csv')
         with open(loss_csv, 'a') as csv:
             #Make a comma if not empty as delimiter
             if not (os.stat(loss_csv).st_size == 0):
@@ -391,7 +428,7 @@ class Analayser:
 
 
         # Export Weights Average at last round
-        last_average_weight_csv = os.path.join(self.folder_for_csv, 'last_average_weight.csv')
+        last_average_weight_csv = os.path.join(self.folder_for_csv, 'last_average_model_param.csv')
         with open(last_average_weight_csv, 'a') as csv:
             #Make a comma if not empty as delimiter
             if not (os.stat(last_average_weight_csv).st_size == 0):
@@ -420,7 +457,7 @@ class Analayser:
             csv.close()
 
         # Export average Weight Development over Rounds
-        weights_csv = os.path.join(self.folder_for_csv, 'weights.csv')
+        weights_csv = os.path.join(self.folder_for_csv, 'average_global_model_param_dev.csv')
         last_global_weights = self.global_aggregated_weight
         with open(weights_csv, 'a') as csv:
             last_global_weights.tofile(csv, sep=',', format='%.18e')
@@ -428,7 +465,7 @@ class Analayser:
             csv.close()
 
         #Export average weight of each node over rounds
-        weights_per_node_csv = os.path.join(self.folder_for_csv, 'weights_per_node.csv')
+        weights_per_node_csv = os.path.join(self.folder_for_csv, 'average_model_param_per_node_dev.csv')
         weights_per_node = self.aggregated_weights
         with open(weights_per_node_csv, 'a') as csv:
             for i in range (0, self.number_of_nodes):
@@ -436,10 +473,6 @@ class Analayser:
                 csv.write('\n')
             csv.write('\n')
             csv.close()
-
-        weights_per_node_npy = os.path.join(self.folder_for_csv, 'weights_per_node.npy')
-        with open(weights_per_node_npy, 'wb') as f:
-            np.save(f, weights_per_node)
 
         # Export standard diviation Development over rounds
         std_dev_scv = os.path.join(self.folder_for_csv, 'std_dev.csv')

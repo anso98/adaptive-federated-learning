@@ -51,20 +51,22 @@ while(execute_next_case):
 
     #check here if full analysis should be ran or just simple test case
     if(full_analysis_all_cases == True):
-        case, number_of_malicious_nodes, percentage_malicious_data = basic_analysis_cases(case) #adds one case, returns [case_no_for_analysis, number_of_malicious_nodes, percentage_malicious_data]
+        case, percentage_of_malicious_nodes, percentage_malicious_data = basic_analysis_cases(case) #adds one case, returns [case_no_for_analysis, number_of_malicious_nodes, percentage_malicious_data]
         if(case == highest_case):
             execute_next_case = False
     else:
         execute_next_case = False
         case = case_no_for_analysis_config #comes from Config File, set there
         # THINK ABOUT HOW TO DO IT IF ITS NOT A CASE; MAYBE DO NOT DEFINE? BUT DOES NOT WORK AS ITS INPUT FOR FUNCTIONS
-        number_of_malicious_nodes = number_of_malicious_nodes_config
+        percentage_of_malicious_nodes = percentage_of_malicious_nodes_config
         percentage_malicious_data = percentage_malicious_data_config
 
+    number_of_malicious_nodes = round(percentage_of_malicious_nodes * n_nodes)
     print('---------------------------------------------------------------------------')
     print('---------------------------------------------------------------------------')
     print("Case number", case)
-    print("Number of malicious nodes:", number_of_malicious_nodes)
+    print("Percentage of malicious nodes:", percentage_of_malicious_nodes*100)
+    print("Calculates to the following number of nodes", number_of_malicious_nodes)
     print("Percentage of malicious data:", percentage_malicious_data*100)
 
     # Initialise weights to 0
@@ -82,15 +84,6 @@ while(execute_next_case):
 
     #send information to client to initialise!
     node_counter = 0
-
-    # Old Version
-    #for n in range(0, n_nodes):
-        #number_this_node = n
-        #indices_this_node = indices_each_node_case[case_to_use][n]
-        # Send data 
-        #msg = ['MSG_INIT_SERVER_TO_CLIENT', model_name, dataset, step_size,
-        #        batch_size, total_data, indices_this_node, number_this_node]
-        #send_msg(client_sock_all[n], msg)
 
     # For Loop for health nodes
     for n in range(0, (n_nodes - number_of_malicious_nodes)):
