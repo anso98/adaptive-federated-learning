@@ -7,6 +7,8 @@ from configAH import *
 import socket
 import numpy as np
 
+#import tensorflow.compat.v1 as tf
+#tf.disable_v2_behavior()
 
 # Establish a connection to all clients
 
@@ -218,9 +220,14 @@ while(execute_next_case):
         print("Loss of previous global value (from nodes): " + str(loss_last_global))
         print("Minimum loss (from nodes): " + str(loss_min), "in round", i_min_loss)
 
+        #FOR THE MORE COMPLEX MODEL
         # In here evaluate loss and accuracy with test data!
+        #if iterator == 50 or iterator == 100 or iterator == 150 or iterator == 200 or iterator == 250 or iterator == 300 or iterator == 350 or iterator == 400 or iterator == 450 or iterator == 500:
         loss_this_global = model.loss(test_image, test_label, w_global)
         accuracy_this_global = model.accuracy(test_image, test_label, w_global)
+        #else:
+        #    loss_this_global = 0
+        #    accuracy_this_global = 0
 
         analyser.new_loss_accuracy(loss_this_global, accuracy_this_global)
 

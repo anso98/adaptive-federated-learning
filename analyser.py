@@ -7,6 +7,7 @@ import os
 from matplotlib import pyplot as plt
 from datetime import datetime
 from all_cases_analyser import *
+#from mpmath import mp, mpf
 
 
 class Analayser:
@@ -157,6 +158,10 @@ class Analayser:
         print("Loss:", loss)
         print("Accuracy:", accuracy)
         print("Round", self.round_tracker)
+
+        #calculate conversion to check that we are approaching the end of learning
+        conversion_rate = self.loss_per_round[self.round_tracker - 2] - loss
+        print("Conversion Rate of Loss Function: ", conversion_rate)
 
         if(loss < self.minimum_loss):
             self.minimum_loss = loss
@@ -311,7 +316,9 @@ class Analayser:
                 this_label = str(i+1) + " (malicious)" #start counting by 1
             else:
                 this_label = str(i+1) + " (healthy)" #start counting by 1
-            fig1 = plt.plot(array_with_accum_mse[i], label = this_label)
+            #fig1 = plt.plot(array_with_accum_mse[i], label = this_label)
+            plt.plot(array_with_accum_mse[i], label = this_label)
+
             #TITLE
         plt.suptitle("MSE of model parameters accross all nodes (Case " + str(self.case) + ")", fontsize = 18, fontweight = "bold")
         plt.title(str(self.percentage_of_malicious_nodes) + "% malicious nodes (" + str(self.percentage_malicious_data*100) + "% malicious data) - " +str(self.number_of_nodes) + " nodes", fontsize = 16, pad = 20)
@@ -337,18 +344,25 @@ class Analayser:
         for j in range(0, self.number_of_nodes):
             for i in range(0, self.max_rounds):
                 if (i < average_out_of - 1):
-                    sum = 0
-                    for k in range(0, i+1):
-                        sum += array_with_accum_mse[j][k]
-                    div_by = i+1
-                    sum /= div_by
-                    average_mse_accum[j][i] = sum
+                    continue # comment in the rest if I want the first values
+                    #sum = 0
+                    #for k in range(0, i+1):
+                    #    sum += array_with_accum_mse[j][k]
+                    #div_by = i+1
+                    #sum /= div_by
+                    #average_mse_accum[j][i] = sum
                 else:
                     sum = 0
                     for k in range(i + 1 - average_out_of, i+1):
                         sum += array_with_accum_mse[j][k]
                     sum /= average_out_of
                     average_mse_accum[j][i] = sum
+
+        # Cut the first 10 values (new try)
+        y_achsis_array = []
+        for i in range(0, len(average_mse_accum[0][10:])):
+            y_achsis_array.append(i + 10)
+        #print("y_achis:", y_achsis_array)
 
         # Create Path to Graph 
         average_mse_graph = os.path.join(folder_path,'moving_average_mse_model_param')
@@ -360,7 +374,7 @@ class Analayser:
                 this_label = str(i+1) + " (Malicious)" #start counting by 1
             else:
                 this_label = str(i+1) + " (healthy)" #start counting by 1
-            fig1 = plt.plot(average_mse_accum[i], label = this_label)
+            fig1 = plt.plot(y_achsis_array, average_mse_accum[i][10:], label = this_label)
             #TITLE
         plt.suptitle("Moving Average (10 values) MSE of model parameters \n accross all nodes (Case " + str(self.case) + ")", fontsize = 18, fontweight = "bold")
         plt.title(str(self.percentage_of_malicious_nodes) + "% malicious nodes (" + str(self.percentage_malicious_data*100) + "% malicious data) - " +str(self.number_of_nodes) + " nodes", fontsize = 16, pad = 20)
@@ -375,6 +389,159 @@ class Analayser:
         plt.subplots_adjust(top=0.75)
         plt.savefig(average_mse_graph, bbox_inches='tight',pad_inches=0.1)
         plt.clf() # flushes plt
+
+        ####################
+        #Relative MSE Calculation # MAYBE CHECK AND DELETE ONE LATER
+        ####################
+
+        # # Get the mean for each parameter in each round! 
+        # save_all_means = np.zeros((self.max_rounds, self.number_of_parameters))
+        # for i in range (0, self.max_rounds):
+        #     means_per_round = np.zeros((self.number_of_parameters))
+        #     for j in range(0, self.number_of_parameters):
+        #         sum_of_parameter = 0
+        #         for k in range(0, self.number_of_nodes):
+        #             sum_of_parameter += self.weights[k][i][j]
+        #         sum_of_parameter /= self.number_of_nodes
+        #         means_per_round[j] = sum_of_parameter
+        #     save_all_means[i] = means_per_round
+
+
+        # array_with_relativ_mse = np.zeros((self.number_of_nodes, self.max_rounds, self.number_of_parameters))
+
+        # array_with_relativ_accum_mse = np.zeros((self.number_of_nodes, self.max_rounds))
+            
+        # # Get the mse for each node for each round and parameter
+        # # sum all paramter mse per node together and give back one value
+        # for i in range(0, self.max_rounds):
+        #     for k in range(0, self.number_of_nodes):
+        #         intermediate_sum = 0
+        #         for j in range(0,self.number_of_parameters):
+        #             #if( abs(save_all_means[i][j]) < 1e-15): # check here
+        #                 #divide = 0
+        #             #else:
+        #             sub_result = (save_all_means[i][j] - self.weights[k][i][j])
+        #             #float_one = float(1)
+        #             array_with_relativ_mse[k][i][j] = sub_result
+        #             intermediate_sum +=  array_with_relativ_mse[k][i][j]
+        #         intermediate_sum /= self.number_of_parameters
+        # #         array_with_relativ_accum_mse[k][i] += intermediate_sum
+
+
+        # # Try to create the mean difference accross all of them 
+        # # IDEA no 3!
+        # array_mean_error_all_nodes = np.zeros((self.max_rounds))
+
+        # # Add all errors together
+        # for i in range(0, self.max_rounds):
+        #     sum_accross_nodes = 0
+        #     temp_result = 0
+        #     for k in range(0, self.number_of_nodes):
+        #         sum_accross_nodes += array_with_accum_mse[k][i] #CHANGED
+        #     temp_result = sum_accross_nodes / self.number_of_nodes
+        #     print("Temp result:", temp_result)
+        #     array_mean_error_all_nodes[i] = temp_result
+
+        # array_relative_idea_3 = np.zeros((self.number_of_nodes, self.max_rounds))
+
+        # # divide error by all errors to make it relative
+        # for i in range(0, self.max_rounds):
+        #     sum_accross_nodes = 0
+        #     for k in range(0, self.number_of_nodes):
+        #         #if( abs(save_all_means[i][j]) < 1e-25): # check here
+        #             #array_relative_idea_3[k][i] = 0
+        #         #else:
+        #         array_relative_idea_3[k][i] = array_with_accum_mse[k][i] / array_mean_error_all_nodes[i] #CHANGED
+
+        # #Create Folder Path for mse
+        # relative_mse_graph = os.path.join(folder_path, 'relative_mse_model_param')
+
+        # print(array_relative_idea_3.shape) #wie geht das?
+
+        # # Plot Array with Accum mse 
+        #     #PLOTS
+        # for i in range(0, self.number_of_nodes):
+        #     if(self.which_node_malicious_array[i] == True):
+        #         this_label = str(i+1) + " (malicious)" #start counting by 1
+        #     else:
+        #         this_label = str(i+1) + " (healthy)" #start counting by 1
+        #     fig1 = plt.plot(array_relative_idea_3[i], label = this_label)
+        #     #TITLE
+        # plt.suptitle("Relative MSE of model parameters accross all nodes (Case " + str(self.case) + ")", fontsize = 18, fontweight = "bold")
+        # plt.title(str(self.percentage_of_malicious_nodes) + "% malicious nodes (" + str(self.percentage_malicious_data*100) + "% malicious data) - " +str(self.number_of_nodes) + " nodes", fontsize = 16, pad = 20)
+        #     #LABLE
+        # plt.xlabel("Update Round", fontsize = 14)
+        # plt.ylabel("Relative MSE of model parameters", fontsize = 14)
+        # plt.ylim([0,0.0003])
+        # plt.xticks(fontsize=14)
+        # plt.yticks(fontsize=14)
+        # plt.autoscale() 
+        #     #LEGEND
+        # plt.legend(loc='center left', bbox_to_anchor=(1, 0.5), prop={"size":14}, frameon = False, title='Node', title_fontsize=16)
+        #     #GENERAL
+        # plt.subplots_adjust(top=0.8)
+        # plt.savefig(relative_mse_graph, bbox_inches='tight',pad_inches=0.1)
+        # plt.clf() # flushes plt
+
+        # # Plot Array with average Accum mse
+
+        # #DEFINE AVERAGE VALUE HERE:        
+        # average_out_of = 10
+        # average_relative_mse_accum = np.zeros((self.number_of_nodes, self.max_rounds))
+        
+        # #Create Moving Averages
+        # for j in range(0, self.number_of_nodes):
+        #     for i in range(0, self.max_rounds):
+        #         if (i < average_out_of - 1):
+        #             sum = 0
+        #             for k in range(0, i+1):
+        #                 sum += array_with_relativ_accum_mse[j][k]
+        #             div_by = i+1
+        #             sum /= div_by
+        #             average_relative_mse_accum[j][i] = sum
+        #         else:
+        #             sum = 0
+        #             for k in range(i + 1 - average_out_of, i+1):
+        #                 sum += array_with_relativ_accum_mse[j][k]
+        #             sum /= average_out_of
+        #             average_relative_mse_accum[j][i] = sum
+
+        # # Cut the first 10 values (new try)
+        # y_achsis_array = []
+        # for i in range(0, len(average_mse_accum[0][10:])):
+        #     y_achsis_array.append(i + 10)
+        # #print("y_achis:", y_achsis_array)
+
+        # # Create Path to Graph 
+        # average_relative_mse_graph = os.path.join(folder_path,'moving_average_relative_mse_model_param')
+
+        # #Check Type 
+        # #print("TYPE:", type(average_relative_mse_accum[0][0]))
+
+        # # Graph creation
+        #     #PLOT
+        # for i in range(0, self.number_of_nodes):
+        #     if(self.which_node_malicious_array[i] == True):
+        #         this_label = str(i+1) + " (Malicious)" #start counting by 1
+        #     else:
+        #         this_label = str(i+1) + " (healthy)" #start counting by 1
+        #     fig1 = plt.plot(y_achsis_array, average_relative_mse_accum[i][10:], label = this_label)
+        #     #TITLE
+        # plt.suptitle("Moving Average (10 values) relative MSE of model parameters \n accross all nodes (Case " + str(self.case) + ")", fontsize = 18, fontweight = "bold")
+        # plt.title(str(self.percentage_of_malicious_nodes) + "% malicious nodes (" + str(self.percentage_malicious_data*100) + "% malicious data) - " +str(self.number_of_nodes) + " nodes", fontsize = 16, pad = 20)
+        #     #LABLE
+        # plt.xlabel("Update Round", fontsize = 14)
+        # plt.ylabel("Relative MSE of model parameters", fontsize = 14)
+        # plt.xticks(fontsize=14)
+        # plt.yticks(fontsize=14)
+        # #plt.ylim([0,10])
+        #     #LEGEND
+        # plt.legend(loc='center left', bbox_to_anchor=(1, 0.5), prop={"size":14}, frameon = False, title='Node', title_fontsize=16)
+        #     #GENERAL
+        # plt.subplots_adjust(top=0.75)
+        # plt.savefig(average_relative_mse_graph, bbox_inches='tight',pad_inches=0.1)
+        # plt.clf() # flushes plt
+
 
         ########################################
         # Export everything into csv! 

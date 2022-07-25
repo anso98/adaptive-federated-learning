@@ -5,18 +5,31 @@ SERVER_ADDR= 'localhost'   # When running in a real distributed setting, change 
 SERVER_PORT = 51000
 #sim_runs = 5 # I am defining it rn as the number of times the central server receives an update from it's clients # don't need sim rounds right now!
 
+# Model, dataset, and control parameter configurations for MNIST with CNN
+# dataset = 'MNIST_ORIG_ALL_LABELS'  # Use for CNN model
+# model_name = 'ModelCNNMnist'
+# control_param_phi = 0.00005   # Good for CNN
+
+# Model, dataset, and control parameter configurations for CIFAR-10 with CNN
+# dataset = 'CIFAR_10'
+# model_name = 'ModelCNNCifar10'
+# control_param_phi = 0.00005   # Good for CNN
+
+#model_name = 'ModelSVMSmooth'
+#dataset = "MNIST_ORIG_EVEN_ODD"
+
 # Model Data
-model_name = 'ModelSVMSmooth'
-batch_size = 200  # 100  # Value for stochastic gradient descent
+model_name = 'ModelCNNMnist'
+dataset = "MNIST_ORIG_ALL_LABELS"
+batch_size = 100  # 100  # Value for stochastic gradient descent
 total_data = 30000  # 60000  #Value for stochastic gradient descent
 step_size = 0.01 #0.01 before
-dataset = "MNIST_ORIG_EVEN_ODD"
 dataset_file_path = "/Users/Anso/Code/Imperial_College/IndividualProject/adaptive-federated-learning/datasets"
 
 n_nodes = 5  # Specifies the total number of clients
 MAX_CASE = 4  # Specifies the maximum number of cases, this should be a constant equal to 4 
 case_to_use = 0 # OLD: case = 1 use second case
-max_rounds = 500
+max_rounds = 200
 
 full_analysis_all_cases = True #change to false if you manually want to test a single case or change something else -- this is for the analysis of malicious data
 

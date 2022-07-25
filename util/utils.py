@@ -1,5 +1,7 @@
 import numpy as np
 import pickle, struct, socket, math
+import random
+
 
 
 def get_even_odd_from_one_hot_label(label):
@@ -68,6 +70,12 @@ def get_indices_each_node_case(n_nodes, maxCase, label_list):
     max_label = max(label_list)
     num_labels = max_label - min_label + 1
 
+    print("Num_labels", num_labels)
+    print("min Label", min_label)
+    print("max Label", max_label)
+    print("len Label list", len(label_list))
+
+
     for i in range(0, len(label_list)):
         # case 1
         indices_each_node_case[0][(i % n_nodes)].append(i)
@@ -83,6 +91,9 @@ def get_indices_each_node_case(n_nodes, maxCase, label_list):
                     tmp_min_index = n
             tmp_target_node = tmp_min_index
         indices_each_node_case[1][tmp_target_node].append(i)
+
+        #print("node", tmp_target_node)
+        #print("indice", label_list[i])
 
         # case 3
         for n in range(0, n_nodes):
@@ -105,5 +116,19 @@ def get_indices_each_node_case(n_nodes, maxCase, label_list):
             tmp_target_node = tmp_min_index
 
         indices_each_node_case[3][tmp_target_node].append(i)
+
+        # Case 5 just shuffel to have different combinations
+        #indices_each_node_case[4][(i % n_nodes)].append(i)
+        #random.shuffle(indices_each_node_case[4])
+        # at least shuffle them to have different things
+       
+        # case 5 - Anso's Case
+        #shuffel does not work as it does only assign i's to it
+        #entries_per_node = int(len(label_list) / n_nodes)
+        #n_node_to_assign = 0
+        #if(i > entries_per_node * (n_node_to_assign +1)):
+        #    xx = 0
+
+
 
     return indices_each_node_case
