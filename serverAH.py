@@ -97,10 +97,12 @@ while(execute_next_case):
         # healthy nodes are not malicious
         client_malicious = False
         percentage_of_maliciousness = 0
+        round_turning_malicious = -1 # out of range value as healthy nodes
+        round_turning_healthy_again = -1 # out of range value as healthy nodes
 
         # Send data 
         msg = ['MSG_INIT_SERVER_TO_CLIENT', model_name, dataset, step_size,
-                batch_size, total_data, indices_this_node, number_this_node, client_malicious, percentage_of_maliciousness]
+                batch_size, total_data, indices_this_node, number_this_node, client_malicious, percentage_of_maliciousness, round_turning_malicious, round_turning_healthy_again]
         send_msg(client_sock_all[node_counter], msg)
 
         # iterate node Counter
@@ -118,10 +120,12 @@ while(execute_next_case):
         # malicious nodes & there percentage of maliciousness
         client_malicious = True
         percentage_of_maliciousness = percentage_malicious_data
+        round_turning_malicious = percentage_round_in_which_turning_malicious * max_rounds
+        round_turning_healthy_again = percentage_round_in_which_turning_healthy_again * max_rounds
 
         # Send data 
         msg = ['MSG_INIT_SERVER_TO_CLIENT', model_name, dataset, step_size,
-                batch_size, total_data, indices_this_node, number_this_node, client_malicious, percentage_of_maliciousness]
+                batch_size, total_data, indices_this_node, number_this_node, client_malicious, percentage_of_maliciousness, round_turning_malicious, round_turning_healthy_again]
         send_msg(client_sock_all[node_counter], msg)
 
         # iterate node Counter
@@ -141,6 +145,14 @@ while(execute_next_case):
     # Print information
     if(number_of_malicious_nodes != 0):
         print(number_of_malicious_nodes, "malicious nodes have received initial data for case", case)
+
+    # Print only if we actually have malicious nodes!
+    if(round_turning_malicious != -1 and round_turning_healthy_again != -1):
+        print("Malicious nodes turn malicious in round", round_turning_malicious)
+        if round_turning_healthy_again == max_rounds:
+            print("Node stays malicious")
+        else:
+            print("Node turns healthy again in round ", round_turning_healthy_again)
 
     # Receive messages from clients that data prep is done!
     for n in range(0, n_nodes):

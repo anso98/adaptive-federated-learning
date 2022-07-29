@@ -11,16 +11,14 @@ SERVER_PORT = 51000
 # control_param_phi = 0.00005   # Good for CNN
 
 # Model, dataset, and control parameter configurations for CIFAR-10 with CNN
-# dataset = 'CIFAR_10'
-# model_name = 'ModelCNNCifar10'
+#dataset = 'CIFAR_10'
+#model_name = 'ModelCNNCifar10'
 # control_param_phi = 0.00005   # Good for CNN
 
-#model_name = 'ModelSVMSmooth'
-#dataset = "MNIST_ORIG_EVEN_ODD"
+model_name = 'ModelSVMSmooth'
+dataset = "MNIST_ORIG_EVEN_ODD"
 
 # Model Data
-model_name = 'ModelCNNMnist'
-dataset = "MNIST_ORIG_ALL_LABELS"
 batch_size = 100  # 100  # Value for stochastic gradient descent
 total_data = 30000  # 60000  #Value for stochastic gradient descent
 step_size = 0.01 #0.01 before
@@ -49,6 +47,9 @@ list_percentages_data_cases = [0.2, 0.4, 0.6, 0.8, 1]
 list_percentages_node_cases = [0, 0.2, 0.4, 0.6, 0.8, 1]
 highest_case = 25
 
+#Manually need to switch this up!
+percentage_round_in_which_turning_malicious = 0.3 #can be 0 or 0.3 or 0.6
+percentage_round_in_which_turning_healthy_again = 1 # can be 1 = never or 0.3 or 0.6
 
 def basic_analysis_cases(previous_case):
 

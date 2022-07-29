@@ -34,6 +34,8 @@ try:
         number_this_node = msg[7]
         client_malicious = msg[8]
         percentage_maliciousness = msg[9]
+        round_turning_malicious = msg[10]
+        round_turning_healthy_again = msg[11]
 
         print('---------------------------------------------------------------------------')
         print('---------------------------------------------------------------------------')
@@ -41,6 +43,11 @@ try:
         print("Node number:", msg[7])
         if(client_malicious):
             print("Node malicious to", (percentage_maliciousness) *100, "percent")
+            print("Node turns malicious in round", round_turning_malicious)
+            if round_turning_healthy_again == max_rounds:
+                print("Node stays malicious")
+            else:
+                print("Node turns healthy again in round ", round_turning_healthy_again)
         else:
             print("This node is not malicious")
 
@@ -89,8 +96,9 @@ try:
             # get new training data
             train_indices = sampler.get_next_batch()
 
-            # If node malicious, then switch train_labels of train_indicies! 
-            if(client_malicious):
+            # If node malicious, then switch train_labels of train_indicies!
+            # # ONLY if we are in a round where the client is malicious!! 
+            if(client_malicious and total_iterations >= round_turning_malicious and total_iterations < round_turning_healthy_again):
 
                 print("Check I am in malicious indicies creation loop")
                 # create a copy and shuffle indicies to maintain randomness
@@ -116,7 +124,7 @@ try:
             grad = model.gradient(train_image, train_label, w, train_indices)
 
             # Change it back after to restore original dataset (also for loss calculation)
-            if(client_malicious):
+            if(client_malicious and total_iterations >= round_turning_malicious and total_iterations < round_turning_healthy_again):
 
                 for element in malicious_indicies:
                     # switch 1 and -1 back 
