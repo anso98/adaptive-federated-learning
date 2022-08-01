@@ -13,7 +13,7 @@ import time
 
 
 class Analayser:
-    def __init__(self, n_nodes, number_of_parameters, max_rounds, case, number_of_malicious_nodes, percentage_malicious_data, total_run_through, highest_case, which_node_malicious_array):
+    def __init__(self, n_nodes, number_of_parameters, max_rounds, case, number_of_malicious_nodes, percentage_malicious_data, total_run_through, highest_case, which_node_malicious_array, round_turning_malicious, round_turning_healthy_again):
 
         # general parameters
         self.number_of_parameters = number_of_parameters
@@ -28,7 +28,8 @@ class Analayser:
         self.percentage_malicious_data = percentage_malicious_data
         self.total_run_through = total_run_through
         self.which_node_malicious_array = which_node_malicious_array
-        #self.nodes_malicious = 
+        self.round_turning_malicious = round_turning_malicious
+        self.round_turning_healthy_again = round_turning_healthy_again
 
         # Capturing Global Parameters
         self.global_weight = np.zeros((max_rounds, number_of_parameters))
@@ -202,6 +203,12 @@ class Analayser:
             else:
                 this_label = "Node " + str(i+1) + " (healthy)" #start counting by 1
             plt.plot(self.aggregated_weights[i], label = this_label)
+        if(self.round_turning_malicious != 0 and self.round_turning_malicious != -1):
+            label_line ='Maliciousness starts'
+            plt.axvline(x = self.round_turning_malicious, label=label_line, color = 'black')
+        if(self.round_turning_healthy_again != self.max_rounds and self.round_turning_healthy_again != -1):
+            label_line ='Maliciousness ends'
+            plt.axvline(x = self.round_turning_healthy_again, label=label_line, color = 'grey')        
             #TITLE
         plt.title(str(self.percentage_of_malicious_nodes) + "% malicious nodes (" + str(self.percentage_malicious_data*100) + "% malicious data) - " +str(self.number_of_nodes) + " nodes", fontsize = 16)
         plt.suptitle("Average model parameter of nodes (Case " + str(self.case) + ")", fontsize = 18, fontweight = 'bold') # (from 784 param)
@@ -219,29 +226,17 @@ class Analayser:
         plt.clf() #flushes plt
 
 
-        ### Plot the Standard derivation ###
-        std_graph = os.path.join(folder_path, 'std_graph')
-        plt.plot(self.std_per_round)
-            #TITLE
-        plt.title(str(self.percentage_of_malicious_nodes) + "% malicious nodes (" + str(self.percentage_malicious_data*100) + "% malicious data) - " +str(self.number_of_nodes) + " nodes", fontsize = 16)
-        plt.suptitle("standard deviation of weights over update rounds (Case" + str(self.case) + ")", fontsize = 18, fontweight = 'bold')
-            #LABLE
-        plt.xlabel("Update Round", fontsize = 14)
-        plt.ylabel("standard deviation", fontsize = 14)
-        plt.xticks(fontsize=14)
-        plt.yticks(fontsize=14)
-            #LEGEND
-        plt.legend(loc = "best", frameon = False, prop={"size":14})
-            #GENERAL
-        plt.subplots_adjust(top=0.85)
-        plt.savefig(std_graph, bbox_inches='tight',pad_inches=0.1)
-        plt.clf() #flushes plt
-
-
         ### Plot loss ###
         loss_graph = os.path.join(folder_path, 'loss_graph')
         plt.plot(self.loss_per_round, label = "Loss")
         plt.scatter(self.round_of_min_loss, self.minimum_loss, label = "Minimum Loss", color='green') # add min loss
+            # PLot Temporay maliciousness
+        if(self.round_turning_malicious != 0 and self.round_turning_malicious != -1):
+            label_line ='Maliciousness starts'
+            plt.axvline(x = self.round_turning_malicious, label=label_line, color = 'black')
+        if(self.round_turning_healthy_again != self.max_rounds and self.round_turning_healthy_again != -1):
+            label_line ='Maliciousness ends'
+            plt.axvline(x = self.round_turning_healthy_again, label=label_line, color = 'grey')  
             #TITLE
         plt.title(str(self.percentage_of_malicious_nodes) + "% malicious nodes (" + str(self.percentage_malicious_data*100) + "% malicious data) - " +str(self.number_of_nodes) + " nodes", fontsize = 16)
         plt.suptitle("Loss of global model over update rounds (Case " + str(self.case) + ")", fontsize = 18, fontweight = "bold")
@@ -251,7 +246,8 @@ class Analayser:
         plt.xticks(fontsize=14)
         plt.yticks(fontsize=14)
             #LEGEND
-        plt.legend(loc = "best", frameon = False, prop={"size":14})
+        plt.legend(loc='center left', bbox_to_anchor=(1, 0.5), prop={"size":14}, frameon = False)
+        #plt.legend(loc = "best", frameon = False, prop={"size":14})
             #GENERAL
         plt.subplots_adjust(top=0.85)
         plt.savefig(loss_graph, bbox_inches='tight',pad_inches=0.1)
@@ -262,6 +258,13 @@ class Analayser:
         accuracy_graph = os.path.join(folder_path, 'accuracy_graph')
         fig4 = plt.plot(self.accuracy_per_round, label = "Accuracy")
         fig4 = plt.scatter(self.round_of_max_accuracy, self.maximum_accuracy, label = "Maximum Accuracy", color='green') # add max accuracy
+            # Plot temporary maliciousnes
+        if(self.round_turning_malicious != 0 and self.round_turning_malicious != -1):
+            label_line ='Maliciousness starts'
+            plt.axvline(x = self.round_turning_malicious, label=label_line, color = 'black')
+        if(self.round_turning_healthy_again != self.max_rounds and self.round_turning_healthy_again != -1):
+            label_line ='Maliciousness ends'
+            plt.axvline(x = self.round_turning_healthy_again, label=label_line, color = 'grey')  
             #TITLE
         plt.title(str(self.percentage_of_malicious_nodes) + "% malicious nodes (" + str(self.percentage_malicious_data*100) + "% malicious data) - " +str(self.number_of_nodes) + " nodes", fontsize = 16)
         plt.suptitle("Accuracy of global model over update rounds (Case " + str(self.case) + ")", fontsize = 18, fontweight = "bold")
@@ -271,7 +274,8 @@ class Analayser:
         plt.xticks(fontsize=14)
         plt.yticks(fontsize=14)
             #LEGEND
-        fig4 = plt.legend(loc = "best", frameon = False, prop={"size":14})
+        plt.legend(loc='center left', bbox_to_anchor=(1, 0.5), prop={"size":14}, frameon = False)
+        #plt.legend(loc = "best", frameon = False, prop={"size":14})
             #GENERAL
         plt.subplots_adjust(top=0.85)
         fig4 = plt.savefig(accuracy_graph, bbox_inches='tight',pad_inches=0.1)
@@ -283,10 +287,9 @@ class Analayser:
 
         #++++++++++++++++++++++++++++++++++++++++++++++++++#
         #Variable definition for analysis
-        moving_average_of = 25
+        moving_average_of = 10
         percentage_of_weights_concidered_lim_case = 0.01
         #++++++++++++++++++++++++++++++++++++++++++++++++++#
-
 
         time_all_weights = []
         time_all_weights.append(time.time()) #0
@@ -343,7 +346,13 @@ class Analayser:
         #         this_label = str(i+1) + " (healthy)" #start counting by 1
         #     #fig1 = plt.plot(array_with_accum_mse[i], label = this_label)
         #     plt.plot(array_with_accum_mse[i], label = this_label)
-
+        #         #plot information of maliciousness
+        # if(self.round_turning_malicious != 0 and self.round_turning_malicious != -1):
+        #     label_line ='Maliciousness starts'
+        #     plt.axvline(x = self.round_turning_malicious, label=label_line, color = 'black')
+        # if(self.round_turning_healthy_again != self.max_rounds and self.round_turning_healthy_again != -1):
+        #     label_line ='Maliciousness ends'
+        #     plt.axvline(x = self.round_turning_healthy_again, label=label_line, color = 'grey')
         #     #TITLE
         # plt.suptitle("MSE of model parameters accross all nodes (Case " + str(self.case) + ")", fontsize = 18, fontweight = "bold")
         # plt.title(str(self.percentage_of_malicious_nodes) + "% malicious nodes (" + str(self.percentage_malicious_data*100) + "% malicious data) - " +str(self.number_of_nodes) + " nodes", fontsize = 16, pad = 20)
@@ -398,6 +407,13 @@ class Analayser:
         #     else:
         #         this_label = str(i+1) + " (healthy)" #start counting by 1
         #     fig1 = plt.plot(y_achsis_array, moving_average_mse_accum[i][moving_average_of:], label = this_label)
+        #           #plot information of maliciousness
+        # if(self.round_turning_malicious != 0 and self.round_turning_malicious != -1):
+        #     label_line ='Maliciousness starts'
+        #     plt.axvline(x = self.round_turning_malicious, label=label_line, color = 'black')
+        # if(self.round_turning_healthy_again != self.max_rounds and self.round_turning_healthy_again != -1):
+        #     label_line ='Maliciousness ends'
+        #     plt.axvline(x = self.round_turning_healthy_again, label=label_line, color = 'grey')
         #     #TITLE
         # plt.suptitle("Moving Average (" +str(moving_average_of) + " values) MSE of model parameters \n accross all nodes (Case " + str(self.case) + ")", fontsize = 18, fontweight = "bold")
         # plt.title(str(self.percentage_of_malicious_nodes) + "% malicious nodes (" + str(self.percentage_malicious_data*100) + "% malicious data) - " +str(self.number_of_nodes) + " nodes", fontsize = 16, pad = 20)
@@ -455,6 +471,16 @@ class Analayser:
             else:
                 this_label = str(i+1) + " (healthy)" #start counting by 1
             fig1 = plt.plot(array_median_relative_mse[i], label = this_label)
+                #plot information of maliciousness
+        print("Malicious",self.round_turning_malicious)
+        print("Healthy",self.round_turning_healthy_again)
+
+        if(self.round_turning_malicious != 0 and self.round_turning_malicious != -1):
+            label_line ='Maliciousness starts'
+            plt.axvline(x = self.round_turning_malicious, label=label_line, color = 'black')
+        if(self.round_turning_healthy_again != self.max_rounds and self.round_turning_healthy_again != -1):
+            label_line ='Maliciousness starts'
+            plt.axvline(x = self.round_turning_healthy_again, label=label_line, color = 'grey')
             #TITLE
         plt.suptitle("Relative MSE of model parameters accross all nodes (Case " + str(self.case) + ")", fontsize = 18, fontweight = "bold")
         plt.title(str(self.percentage_of_malicious_nodes) + "% malicious nodes (" + str(self.percentage_malicious_data*100) + "% malicious data) - " +str(self.number_of_nodes) + " nodes", fontsize = 16, pad = 20)
@@ -510,10 +536,17 @@ class Analayser:
             #PLOT
         for i in range(0, self.number_of_nodes):
             if(self.which_node_malicious_array[i] == True):
-                this_label = str(i+1) + " (Malicious)" #start counting by 1
+                this_label = str(i+1) + " (malicious)" #start counting by 1
             else:
                 this_label = str(i+1) + " (healthy)" #start counting by 1
-            fig1 = plt.plot(y_achsis_array, average_median_relative_mse_accum[i][moving_average_of:], label = this_label)
+            plt.plot(y_achsis_array, average_median_relative_mse_accum[i][moving_average_of:], label = this_label)
+                #plot information of maliciousness
+        if(self.round_turning_malicious != 0 and self.round_turning_malicious != -1):
+            label_line ='Maliciousness starts'
+            plt.axvline(x = self.round_turning_malicious, label=label_line, color = 'black')
+        if(self.round_turning_healthy_again != self.max_rounds and self.round_turning_healthy_again != -1):
+            label_line ='Maliciousness ends'
+            plt.axvline(x = self.round_turning_healthy_again, label=label_line, color = 'grey')
             #TITLE
         plt.suptitle("Moving Average (" +str(moving_average_of) + " values) relative MSE of model parameters \n accross all nodes (Case " + str(self.case) + ")", fontsize = 18, fontweight = "bold")
         plt.title(str(self.percentage_of_malicious_nodes) + "% malicious nodes (" + str(self.percentage_malicious_data*100) + "% malicious data) - " +str(self.number_of_nodes) + " nodes", fontsize = 16, pad = 20)
@@ -582,6 +615,13 @@ class Analayser:
             else:
                 this_label = str(i+1) + " (healthy)" #start counting by 1
             fig1 = plt.plot(array_mean_relative_mse[i], label = this_label)
+                #plot information of maliciousness
+        if(self.round_turning_malicious != 0 and self.round_turning_malicious != -1):
+            label_line ='Maliciousness starts'
+            plt.axvline(x = self.round_turning_malicious, label=label_line, color = 'black')
+        if(self.round_turning_healthy_again != self.max_rounds and self.round_turning_healthy_again != -1):
+            label_line ='Maliciousness ends'
+            plt.axvline(x = self.round_turning_healthy_again, label=label_line, color = 'grey')
             #TITLE
         plt.suptitle("Relative MSE of model parameters accross all nodes (Case " + str(self.case) + ")", fontsize = 18, fontweight = "bold")
         plt.title(str(self.percentage_of_malicious_nodes) + "% malicious nodes (" + str(self.percentage_malicious_data*100) + "% malicious data) - " +str(self.number_of_nodes) + " nodes", fontsize = 16, pad = 20)
@@ -633,10 +673,17 @@ class Analayser:
             #PLOT
         for i in range(0, self.number_of_nodes):
             if(self.which_node_malicious_array[i] == True):
-                this_label = str(i+1) + " (Malicious)" #start counting by 1
+                this_label = str(i+1) + " (malicious)" #start counting by 1
             else:
                 this_label = str(i+1) + " (healthy)" #start counting by 1
             fig1 = plt.plot(y_achsis_array, average_mean_relative_mse_accum[i][moving_average_of:], label = this_label)
+                #plot information of maliciousness
+        if(self.round_turning_malicious != 0 and self.round_turning_malicious != -1):
+            label_line ='Maliciousness starts'
+            plt.axvline(x = self.round_turning_malicious, label=label_line, color = 'black')
+        if(self.round_turning_healthy_again != self.max_rounds and self.round_turning_healthy_again != -1):
+            label_line ='Maliciousness ends'
+            plt.axvline(x = self.round_turning_healthy_again, label=label_line, color = 'grey')
             #TITLE
         plt.suptitle("Moving Average (" +str(moving_average_of) + " values) relative MSE of model parameters \n accross all nodes (Case " + str(self.case) + ")", fontsize = 18, fontweight = "bold")
         plt.title(str(self.percentage_of_malicious_nodes) + "% malicious nodes (" + str(self.percentage_malicious_data*100) + "% malicious data) - " +str(self.number_of_nodes) + " nodes", fontsize = 16, pad = 20)
@@ -682,10 +729,30 @@ class Analayser:
         number_of_weights_concidered = int(self.number_of_parameters * percentage_of_weights_concidered_lim_case)
         print("number of weights considered", number_of_weights_concidered)
         indicies_larges_weights = np.zeros((self.max_rounds,number_of_weights_concidered))
+        indicies_sorted = np.zeros((self.max_rounds, self.number_of_parameters))
 
         print("Len all means", len(save_all_means))
         for row in range(len(save_all_means)):
-            indicies_larges_weights[row] = save_all_means[row].argsort()[::-1][:number_of_weights_concidered] #[-784:]#second bracket turns out around
+            #indicies_larges_weights[row] = save_all_means[row].argsort()[::-1][:number_of_weights_concidered] #note ::-1 means: starts from the end towards the first taking each element.
+            #Maybe instead:
+    
+            indicies_sorted[row] = save_all_means[row].argsort()[::-1]
+
+            beginning_counter = 0 
+            end_counter = self.number_of_parameters - 1 # maybe -1 not sure?
+            print(save_all_means[row][int(indicies_sorted[row][beginning_counter])])
+            for i in range(0, number_of_weights_concidered):
+                if(abs(save_all_means[row][int(indicies_sorted[row][beginning_counter])]) > abs(save_all_means[row][int(indicies_sorted[row][end_counter])])):
+                    indicies_larges_weights[row][i] = indicies_sorted[row][beginning_counter]
+                    #print(save_all_means[row][int(indicies_sorted[row][beginning_counter])])
+                    beginning_counter += 1
+                else:
+                    indicies_larges_weights[row][i] = indicies_sorted[row][end_counter]
+                    #print(save_all_means[row][int(indicies_sorted[row][end_counter])])
+                    end_counter -= 1
+
+
+
         print("Shape Indicies largest weights", indicies_larges_weights.shape)
 
         # # COMMENT OUT IF NOT NEEDED! 
@@ -725,69 +792,6 @@ class Analayser:
         time_lim_weights.append(time.time()) #3
         print("Time mse (just for the biggest indices)", time_lim_weights[3]-time_lim_weights[2])
 
-        # #BEGINNING OF STUFF I INSERTED!!
-        # #DEFINE AVERAGE VALUE HERE:        
-        # moving_average_mse_accum = np.zeros((self.number_of_nodes, self.max_rounds))
-        
-        # #Create Moving Averages
-        # for j in range(0, self.number_of_nodes):
-        #     for i in range(0, self.max_rounds):
-        #         if (i < moving_average_of - 1):
-        #             continue # comment in the rest if I want the first values
-        #             #sum = 0
-        #             #for k in range(0, i+1):
-        #             #    sum += array_with_accum_mse[j][k]
-        #             #div_by = i+1
-        #             #sum /= div_by
-        #             #moving_average_mse_accum[j][i] = sum
-        #         else:
-        #             sum = 0
-        #             for k in range(i + 1 - moving_average_of, i+1):
-        #                 sum += array_with_accum_mse[j][k]
-        #             sum /= moving_average_of
-        #             moving_average_mse_accum[j][i] = sum
-
-        # # Cut the first x values (new try)
-        # y_achsis_array = []
-        # for i in range(0, len(moving_average_mse_accum[0][moving_average_of:])):
-        #     y_achsis_array.append(i + moving_average_of)
-        # #print("y_achis:", y_achsis_array)
-
-        # time4 = time.time()
-        # print("Time for mse moving average", time4-time3)
-
-        # # Create Path to Graph 
-        # lim_weight_average_mse_graph = os.path.join(folder_path,'lim_weight_moving_average_mse_model_param')
-
-        # # Graph creation
-        #     #PLOT
-        # for i in range(0, self.number_of_nodes):
-        #     if(self.which_node_malicious_array[i] == True):
-        #         this_label = str(i+1) + " (Malicious)" #start counting by 1
-        #     else:
-        #         this_label = str(i+1) + " (healthy)" #start counting by 1
-        #     fig1 = plt.plot(y_achsis_array, moving_average_mse_accum[i][moving_average_of:], label = this_label)
-        #     #TITLE
-        # plt.suptitle("Moving Average (" +str(moving_average_of) + " values) MSE of model parameters \n accross all nodes (Case " + str(self.case) + ")", fontsize = 18, fontweight = "bold")
-        # plt.title(str(self.percentage_of_malicious_nodes) + "% malicious nodes (" + str(self.percentage_malicious_data*100) + "% malicious data) - " +str(self.number_of_nodes) + " nodes", fontsize = 16, pad = 20)
-        #     #LABLE
-        # plt.xlabel("Update Round", fontsize = 14)
-        # plt.ylabel("MSE of model parameters", fontsize = 14)
-        # plt.xticks(fontsize=14)
-        # plt.yticks(fontsize=14)
-        #     #LEGEND
-        # plt.legend(loc='center left', bbox_to_anchor=(1, 0.5), prop={"size":14}, frameon = False, title='Node', title_fontsize=16)
-        #     #GENERAL
-        # plt.subplots_adjust(top=0.75)
-        # plt.savefig(lim_weight_average_mse_graph, bbox_inches='tight',pad_inches=0.1)
-        # plt.clf() # flushes plt
-        # #END OF STUFF I INSERTED!
-
-        # time5 = time.time()
-        # print("Time for graph of mse moving average", time5-time4)
-
-
-        #'CONTINUE HERE WITH EVERYTHING ELSE'
         #median version!
         array_median_error_all_nodes = np.zeros((self.max_rounds))
         array_median_error_all_nodes = np.median(array_with_accum_mse, axis = 0)
@@ -820,8 +824,15 @@ class Analayser:
             else:
                 this_label = str(i+1) + " (healthy)" #start counting by 1
             fig1 = plt.plot(array_median_relative_mse[i], label = this_label)
+                #plot information of maliciousness
+        if(self.round_turning_malicious != 0 and self.round_turning_malicious != -1):
+            label_line ='Maliciousness starts'
+            plt.axvline(x = self.round_turning_malicious, label=label_line, color = 'black')
+        if(self.round_turning_healthy_again != self.max_rounds and self.round_turning_healthy_again != -1):
+            label_line ='Maliciousness ends'
+            plt.axvline(x = self.round_turning_healthy_again, label=label_line, color = 'grey')
             #TITLE
-        plt.suptitle("Relative MSE of model parameters accross all nodes (Case " + str(self.case) + ")", fontsize = 18, fontweight = "bold")
+        plt.suptitle("Relative MSE of top abs. " + str(int(percentage_of_weights_concidered_lim_case * 100)) +"% model parameters accross all nodes (Case " + str(self.case) + ")", fontsize = 18, fontweight = "bold")
         plt.title(str(self.percentage_of_malicious_nodes) + "% malicious nodes (" + str(self.percentage_malicious_data*100) + "% malicious data) - " +str(self.number_of_nodes) + " nodes", fontsize = 16, pad = 20)
             #LABLE
         plt.xlabel("Update Round", fontsize = 14)
@@ -836,7 +847,6 @@ class Analayser:
         plt.subplots_adjust(top=0.8)
         plt.savefig(lim_weights_median_relative_mse_graph, bbox_inches='tight',pad_inches=0.1)
         plt.clf() # flushes plt
-
 
         time_lim_weights.append(time.time()) #5
         print("Time for making median graph", time_lim_weights[5]-time_lim_weights[4])
@@ -879,12 +889,19 @@ class Analayser:
             #PLOT
         for i in range(0, self.number_of_nodes):
             if(self.which_node_malicious_array[i] == True):
-                this_label = str(i+1) + " (Malicious)" #start counting by 1
+                this_label = str(i+1) + " (malicious)" #start counting by 1
             else:
                 this_label = str(i+1) + " (healthy)" #start counting by 1
             fig1 = plt.plot(y_achsis_array, average_median_relative_mse_accum[i][moving_average_of:], label = this_label)
+                #plot information of maliciousness
+        if(self.round_turning_malicious != 0 and self.round_turning_malicious != -1):
+            label_line ='Maliciousness starts'
+            plt.axvline(x = self.round_turning_malicious, label=label_line, color = 'black')
+        if(self.round_turning_healthy_again != self.max_rounds and self.round_turning_healthy_again != -1):
+            label_line ='Maliciousness ends'
+            plt.axvline(x = self.round_turning_healthy_again, label=label_line, color = 'grey')
             #TITLE
-        plt.suptitle("Moving Average (" +str(moving_average_of) + " values) relative MSE of model parameters \n accross all nodes (Case " + str(self.case) + ")", fontsize = 18, fontweight = "bold")
+        plt.suptitle("Moving Average (" +str(moving_average_of) + " values) relative MSE of top abs. " + str(int(percentage_of_weights_concidered_lim_case * 100)) + "% model parameters \n accross all nodes (Case " + str(self.case) + ")", fontsize = 18, fontweight = "bold")
         plt.title(str(self.percentage_of_malicious_nodes) + "% malicious nodes (" + str(self.percentage_malicious_data*100) + "% malicious data) - " +str(self.number_of_nodes) + " nodes", fontsize = 16, pad = 20)
             #LABLE
         plt.xlabel("Update Round", fontsize = 14)
@@ -920,18 +937,29 @@ class Analayser:
 
         timing_full_weights = os.path.join(self.folder_for_csv, 'timing_full_weights.csv')
         with open(timing_full_weights, 'a') as csv:
-            for element in time_all_weights:
-                csv.write(str(element))
-                csv.write(',')
+            for i in range(0, len(time_all_weights)):
+                if i == 0:
+                    continue
+                else:
+                    calc_div = time_all_weights[i] - time_all_weights[i-1]
+                    csv.write(str(calc_div))    
+                    csv.write(',')
             #csv.write(','.join(time_all_weights))
             csv.write('\n')
             csv.close()
 
         timing_lim_weights = os.path.join(self.folder_for_csv, 'timing_lim_weights.csv')
         with open(timing_lim_weights, 'a') as csv:
-            for element in time_lim_weights:
-                csv.write(str(element))
-                csv.write(',')
+            for i in range(0, len(time_lim_weights)):
+                if i == 0:
+                    continue
+                else:
+                    calc_div = time_lim_weights[i] - time_lim_weights[i-1]
+                    csv.write(str(calc_div))    
+                    csv.write(',')
+            #for element in time_lim_weights:
+                #csv.write(str(element))
+                #csv.write(',')
             #csv.write(','.join(time_lim_weights))
             csv.write('\n')
             csv.close()

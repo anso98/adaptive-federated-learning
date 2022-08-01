@@ -37,8 +37,6 @@ percentage_of_malicious_nodes_config = 1
 # cases in analysis: 0, 0.2, 0.4, 0.6, 0.8, 1
 percentage_malicious_data_config = 0.4
 # cases in analysis: 0.2, 0.4, 0.6, 0.8, 1
-round_where_clients_turn_malicious_config = 0
-# cases in analysis: 0, 100, 200, 300, 400
 case_no_for_analysis_config = 0 # specify which case you want to do is!
 
 #IMPORTANT' THIS IS HARDCODED; CHANGE IF NUMBER OF CASES CHANGES
@@ -48,8 +46,8 @@ list_percentages_node_cases = [0, 0.2, 0.4, 0.6, 0.8, 1]
 highest_case = 25
 
 #Manually need to switch this up!
-percentage_round_in_which_turning_malicious = 0.3 #can be 0 or 0.3 or 0.6
-percentage_round_in_which_turning_healthy_again = 1 # can be 1 = never or 0.3 or 0.6
+percentage_round_where_clients_turn_malicious = 0.3 #can be 0 or 0.3 or 0.6
+percentage_round_where_clients_turn_healthy_again = 0.6 # can be 1 = never or 0.3 or 0.6
 
 def basic_analysis_cases(previous_case):
 

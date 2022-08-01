@@ -8,7 +8,7 @@ import os
 from matplotlib import pyplot as plt
 from datetime import datetime
 from all_cases_analyser import *
-from configAH import get_labeling_of_case, list_percentages_data_cases, list_percentages_node_cases, highest_case
+from configAH import get_labeling_of_case, list_percentages_data_cases, list_percentages_node_cases, highest_case, percentage_round_where_clients_turn_malicious, percentage_round_where_clients_turn_healthy_again
 
 # Function for per value per node array (with 5 cases per node)
 def return_cases_split_by_node(input_highest_case, array, n_nodes):
@@ -68,7 +68,7 @@ def all_cases_analysis(folder_for_csv, highest_case, update_rounds,n_nodes):
     # here I want to split by 5, always 5 datas at once!
     for i in range(0, number_cases_different_no_mali_nodes):
         this_label = str(round((i/n_nodes)*100, 0)) + "%" 
-        plt.plot(this_list_percentages_data_cases, accuracy_array[i], label = this_label)
+        plt.plot(this_list_percentages_data_cases, accuracy_array[i], "-o",label = this_label)
         #TITLE
     plt.suptitle("Maximum accuracy in FL system", fontsize = 18, fontweight="bold")
     title =  str(n_nodes) + " nodes, " + str(update_rounds) + " update rounds"
@@ -106,7 +106,7 @@ def all_cases_analysis(folder_for_csv, highest_case, update_rounds,n_nodes):
     for i in range(0, number_cases_different_no_mali_nodes):
         #this_label = str(i) + " nodes malicious" OLD
         this_label = str(round((i/n_nodes)*100, 0)) + "%" 
-        plt.plot(this_list_percentages_data_cases, loss_array[i], label = this_label)
+        plt.plot(this_list_percentages_data_cases, loss_array[i], '-o',label = this_label)
         #TITLE
     plt.suptitle("Minimum loss in FL system", fontsize = 18, fontweight="bold")
     title =  str(n_nodes) + " nodes, " + str(update_rounds) + " update rounds"
@@ -143,7 +143,7 @@ def all_cases_analysis(folder_for_csv, highest_case, update_rounds,n_nodes):
     for i in range(0, number_cases_different_no_mali_nodes):
         #this_label = str(i) + " nodes malicious" OLD
         this_label = str(round((i/n_nodes)*100, 0)) + "%" 
-        plt.plot(this_list_percentages_data_cases, last_accuracy_array[i], label = this_label)
+        plt.plot(this_list_percentages_data_cases, last_accuracy_array[i], '-o', label = this_label)
         #TITLE
     plt.suptitle("Last round accuracy in FL system", fontsize = 18, fontweight = "bold")
     title =  str(n_nodes) + " nodes, " + str(update_rounds) + " update rounds"
@@ -180,7 +180,7 @@ def all_cases_analysis(folder_for_csv, highest_case, update_rounds,n_nodes):
     for i in range(0, number_cases_different_no_mali_nodes):
         this_label = str(round((i/n_nodes)*100, 0)) + "%" 
         #this_label = str(i) + " nodes malicious" OLD
-        plt.plot(this_list_percentages_data_cases, last_loss_array[i], label = this_label)
+        plt.plot(this_list_percentages_data_cases, last_loss_array[i], '-o', label = this_label)
         #TITLE
     plt.suptitle("Last round loss in FL system", fontsize = 18, fontweight = "bold")
     title =  str(n_nodes) + " nodes, " + str(update_rounds) + " update rounds"
@@ -201,6 +201,12 @@ def all_cases_analysis(folder_for_csv, highest_case, update_rounds,n_nodes):
 
     ############ Weight ############
 
+    # ***
+    # Calculate temporary 
+    round_turning_malicious = int(percentage_round_where_clients_turn_malicious * update_rounds)
+    round_turning_healthy_again = int(percentage_round_where_clients_turn_healthy_again * update_rounds) 
+
+
     # Load Data & create Array for weight
     last_av_weight_csv = os.path.join(folder_for_csv, 'last_average_model_param.csv')
 
@@ -220,6 +226,13 @@ def all_cases_analysis(folder_for_csv, highest_case, update_rounds,n_nodes):
     for i in range(0, number_cases_different_no_mali_nodes):
         this_label = str(round((i/n_nodes)*100, 0)) + "%" 
         plt.plot(this_list_percentages_data_cases, last_av_weights_array[i], label = this_label)
+    # Show temporary maliciousness as lines!
+    if(round_turning_malicious != 0 and round_turning_malicious != -1):
+        label_line ='malicious node starts to be malicious'
+        plt.axvline(x = round_turning_malicious, label=label_line, color = 'black')
+    if(round_turning_healthy_again != update_rounds and round_turning_healthy_again != -1):
+        label_line ='malicious node turns healthy again'
+        plt.axvline(x = round_turning_healthy_again, label=label_line, color = 'grey')
         #TITLE
     plt.suptitle("Average Model Parameter (in last round) in FL system", fontsize = 18, fontweight = "bold")
     title =  str(n_nodes) + " nodes, " + str(update_rounds) + " update rounds"
@@ -260,6 +273,13 @@ def all_cases_analysis(folder_for_csv, highest_case, update_rounds,n_nodes):
     for i in range(0, len(all_weights)):
         case_label = get_labeling_of_case(i)
         plt.plot(all_weights[i], label = case_label)
+        # Show temporary maliciousness as lines!
+    if(round_turning_malicious != 0 and round_turning_malicious != -1):
+        label_line ='malicious node starts to be malicious'
+        plt.axvline(x = round_turning_malicious, label=label_line, color = 'black')
+    if(round_turning_healthy_again != update_rounds and round_turning_healthy_again != -1):
+        label_line ='malicious node turns healthy again'
+        plt.axvline(x = round_turning_healthy_again, label=label_line, color = 'grey')
         #TITLE
     plt.suptitle("Average Model Parameter in FL system", fontsize = 18, fontweight = "bold")
     title =  str(n_nodes) + " nodes, " + str(update_rounds) + " update rounds"
@@ -290,6 +310,13 @@ def all_cases_analysis(folder_for_csv, highest_case, update_rounds,n_nodes):
         case_label = get_labeling_of_case(element)
         #this_label = "Case " + str(element) + ": " + case_label
         plt.plot(all_weights[element], label = case_label)
+        # Show temporary maliciousness as lines!
+    if(round_turning_malicious != 0 and round_turning_malicious != -1):
+        label_line ='malicious node starts to be malicious'
+        plt.axvline(x = round_turning_malicious, label=label_line, color = 'black')
+    if(round_turning_healthy_again != update_rounds and round_turning_healthy_again != -1):
+        label_line ='malicious node turns healthy again'
+        plt.axvline(x = round_turning_healthy_again, label=label_line, color = 'grey')
         #TITLE
     plt.suptitle("Average Model Parameter in FL system", fontsize = 18, fontweight = "bold")
     title =  str(n_nodes) + " nodes, " + str(update_rounds) + " update rounds"
@@ -317,6 +344,13 @@ def all_cases_analysis(folder_for_csv, highest_case, update_rounds,n_nodes):
         case_label = get_labeling_of_case(element)
         #this_label = "Case " + str(element) + ": " + case_label
         plt.plot(all_weights[element], label = case_label)
+        # Show temporary maliciousness as lines!
+    if(round_turning_malicious != 0 and round_turning_malicious != -1):
+        label_line ='malicious node starts to be malicious'
+        plt.axvline(x = round_turning_malicious, label=label_line, color = 'black')
+    if(round_turning_healthy_again != update_rounds and round_turning_healthy_again != -1):
+        label_line ='malicious node turns healthy again'
+        plt.axvline(x = round_turning_healthy_again, label=label_line, color = 'grey')
         #TITLE
     plt.suptitle("Average Model Parameter in FL system", fontsize = 18, fontweight = "bold")
     title =  str(n_nodes) + " nodes, " + str(update_rounds) + " update rounds"
@@ -344,6 +378,13 @@ def all_cases_analysis(folder_for_csv, highest_case, update_rounds,n_nodes):
         case_label = get_labeling_of_case(element)
         #this_label = "Case " + str(element) + ": " + case_label
         plt.plot(all_weights[element], label = case_label)
+        # Show temporary maliciousness as lines!
+    if(round_turning_malicious != 0 and round_turning_malicious != -1):
+        label_line ='malicious node starts to be malicious'
+        plt.axvline(x = round_turning_malicious, label=label_line, color = 'black')
+    if(round_turning_healthy_again != update_rounds and round_turning_healthy_again != -1):
+        label_line ='malicious node turns healthy again'
+        plt.axvline(x = round_turning_healthy_again, label=label_line, color = 'grey')
         #TITLE
     plt.suptitle("Average Model Parameter in FL system", fontsize = 18, fontweight = "bold")
     title =  str(n_nodes) + " nodes, " + str(update_rounds) + " update rounds"
@@ -459,16 +500,16 @@ def all_cases_analysis(folder_for_csv, highest_case, update_rounds,n_nodes):
     return
 
 
-
 # PYTHON MAIN!!
 if __name__ == "__main__":
     highest_case = 25
     current_directory = os. getcwd() 
     day_time = (datetime.today().strftime('%Y-%m-%d') + ': ' + str(highest_case) +' cases/')
     folder_for_csv = os.path.join(current_directory, 'analysis_results/' + day_time)
-    rounds = 250
-    n_nodes = 10
+    rounds = 200
+    n_nodes = 5
     #path = '/Users/Anso/Code/Imperial_College/IndividualProject/adaptive-federated-learning/analysis_results/2022-07-12: 25 cases/'
     path = '/Users/Anso/Code/Imperial_College/IndividualProject/adaptive-federated-learning/analysis_results/2022-07-18: 25 cases -- 2 -CASENUM 0/overall_analysis'
     path_10_nodes = '/Users/Anso/Code/Imperial_College/IndividualProject/adaptive-federated-learning/analysis_results/2022-07-19: 25 cases -- 1/overall_analysis'
-    all_cases_analysis(path_10_nodes, highest_case, rounds, n_nodes)
+    pathy_nodes = '/Users/Anso/Code/Imperial_College/IndividualProject/adaptive-federated-learning/analysis_results/2022-07-30: 25 cases -- malicious round 75-120/overall_analysis'
+    all_cases_analysis(pathy_nodes, highest_case, rounds, n_nodes)

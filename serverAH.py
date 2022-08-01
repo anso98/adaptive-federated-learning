@@ -120,8 +120,8 @@ while(execute_next_case):
         # malicious nodes & there percentage of maliciousness
         client_malicious = True
         percentage_of_maliciousness = percentage_malicious_data
-        round_turning_malicious = percentage_round_in_which_turning_malicious * max_rounds
-        round_turning_healthy_again = percentage_round_in_which_turning_healthy_again * max_rounds
+        round_turning_malicious = percentage_round_where_clients_turn_malicious * max_rounds
+        round_turning_healthy_again = percentage_round_where_clients_turn_healthy_again * max_rounds
 
         # Send data 
         msg = ['MSG_INIT_SERVER_TO_CLIENT', model_name, dataset, step_size,
@@ -166,7 +166,7 @@ while(execute_next_case):
 
     #Start Analyser
     number_of_parameters = len(w_global)
-    analyser = Analayser(n_nodes, number_of_parameters, max_rounds, case, number_of_malicious_nodes, percentage_malicious_data, full_analysis_all_cases, highest_case, which_node_malicious_array)
+    analyser = Analayser(n_nodes, number_of_parameters, max_rounds, case, number_of_malicious_nodes, percentage_malicious_data, full_analysis_all_cases, highest_case, which_node_malicious_array, round_turning_malicious, round_turning_healthy_again)
 
     while True:
 
