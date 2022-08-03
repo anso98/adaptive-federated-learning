@@ -46,8 +46,8 @@ list_percentages_node_cases = [0, 0.2, 0.4, 0.6, 0.8, 1]
 highest_case = 25
 
 #Manually need to switch this up!
-percentage_round_where_clients_turn_malicious = 0.3 #can be 0 or 0.3 or 0.6
-percentage_round_where_clients_turn_healthy_again = 0.6 # can be 1 = never or 0.3 or 0.6
+percentage_round_where_clients_turn_malicious = 0 #can be 0 or 0.3 or 0.6
+percentage_round_where_clients_turn_healthy_again = 1 # can be 1 = never or 0.3 or 0.6
 
 def basic_analysis_cases(previous_case):
 

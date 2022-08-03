@@ -512,4 +512,5 @@ if __name__ == "__main__":
     path = '/Users/Anso/Code/Imperial_College/IndividualProject/adaptive-federated-learning/analysis_results/2022-07-18: 25 cases -- 2 -CASENUM 0/overall_analysis'
     path_10_nodes = '/Users/Anso/Code/Imperial_College/IndividualProject/adaptive-federated-learning/analysis_results/2022-07-19: 25 cases -- 1/overall_analysis'
     pathy_nodes = '/Users/Anso/Code/Imperial_College/IndividualProject/adaptive-federated-learning/analysis_results/2022-07-30: 25 cases -- malicious round 75-120/overall_analysis'
-    all_cases_analysis(pathy_nodes, highest_case, rounds, n_nodes)
+    path_non_binary = '/Users/Anso/Code/Imperial_College/IndividualProject/adaptive-federated-learning/analysis_results/non_binary_mnist_results/overall_analysis'
+    all_cases_analysis(path_non_binary, highest_case, rounds, n_nodes)
