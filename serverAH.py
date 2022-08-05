@@ -158,7 +158,7 @@ while(execute_next_case):
     for n in range(0, n_nodes):
         recv_msg(client_sock_all[n], 'MSG_DATA_PREP_FINISHED_CLIENT_TO_SERVER')
 
-    print("All confirmation from nodes are received")
+    print("All confirmation from nodes are received", flush=True)
 
     #initilise iterator
     iterator = 0

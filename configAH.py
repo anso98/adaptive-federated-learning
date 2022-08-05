@@ -18,16 +18,22 @@ SERVER_PORT = 51000
 model_name = 'ModelSVMSmooth'
 dataset = "MNIST_ORIG_EVEN_ODD"
 
+type_malicious = "bool_switch" #Options:"bool_switch", "unvalid_0to9", "random_0to9", "unvalid_bool"
+
 # Model Data
 batch_size = 100  # 100  # Value for stochastic gradient descent
 total_data = 30000  # 60000  #Value for stochastic gradient descent
 step_size = 0.01 #0.01 before
 dataset_file_path = "/Users/Anso/Code/Imperial_College/IndividualProject/adaptive-federated-learning/datasets"
 
+#SELECT HOW TO STORE (BIG VS SMALL MODEL:)
+storing_type = "date" #Options: "date" -> with date automatically, else: whatever you put as a string there!!!
+
+
 n_nodes = 5  # Specifies the total number of clients
-MAX_CASE = 4  # Specifies the maximum number of cases, this should be a constant equal to 4 
-case_to_use = 0 # OLD: case = 1 use second case
-max_rounds = 200
+MAX_CASE = 5  # Specifies the maximum number of cases, this should be a constant equal to 4 
+case_to_use = 4 # OLD: case = 1 use second case
+max_rounds = 500
 
 full_analysis_all_cases = True #change to false if you manually want to test a single case or change something else -- this is for the analysis of malicious data
 

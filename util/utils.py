@@ -63,6 +63,8 @@ def get_indices_each_node_case(n_nodes, maxCase, label_list):
     for i in range(0, n_nodes):
         for j in range(0, maxCase):
             indices_each_node_case[j].append([])
+    
+    print(len(indices_each_node_case))
 
     # indices_each_node_case is a big list that contains N-number of sublists. Sublist n contains the indices that should be assigned to node n
 
@@ -114,25 +116,30 @@ def get_indices_each_node_case(n_nodes, maxCase, label_list):
                     tmp_min_val = len(indices_each_node_case[3][n])
                     tmp_min_index = n
             tmp_target_node = tmp_min_index
-
         indices_each_node_case[3][tmp_target_node].append(i)
 
-        # # Non IID data close to practise, one malicious node has 
-        #         # case 2
-        # even_distributed_nodes = n_nodes - 1
-        # tmp_target_node = int((label_list[i] - min_label) % even_distributed_nodes)
-        # if even_distributed_nodes > num_labels:
-        #     tmp_min_index = 0
-        #     tmp_min_val = math.inf
-        #     for n in range(0, even_distributed_nodes):
-        #         if n % num_labels == tmp_target_node and len(indices_each_node_case[1][n]) < tmp_min_val:
-        #             tmp_min_val = len(indices_each_node_case[1][n])
-        #             tmp_min_index = n
-        #     tmp_target_node = tmp_min_index
-        # indices_each_node_case[4][tmp_target_node].append(i)
-        # indices_each_node_case[4][n_nodes-1] = indices_each_node_case[1][n_nodes-2] #Manually last node is the same as node before
-        # #Shuffle before handing it out to make sue some kind of change is happening!
-
+        # Non IID data close to practise, one malicious node has 
+                # case 2
+        print("CHECK POINT")
+        even_distributed_nodes = n_nodes - 1
+        tmp_target_node = int((label_list[i] - min_label) % even_distributed_nodes)
+        if even_distributed_nodes > num_labels:
+            tmp_min_index = 0
+            tmp_min_val = math.inf
+            for n in range(0, even_distributed_nodes):
+                if n % num_labels == tmp_target_node and len(indices_each_node_case[1][n]) < tmp_min_val:
+                    tmp_min_val = len(indices_each_node_case[1][n])
+                    tmp_min_index = n
+            tmp_target_node = tmp_min_index
+        indices_each_node_case[4][tmp_target_node].append(i)
+        #Shuffle before handing it out to make sue some kind of change is happening!
+    
+    print("Before assignment, print node 5", indices_each_node_case[4][n_nodes-1])
+    
+    #OUTSIDE OF LOOP OF NODES
+    indices_each_node_case[4][n_nodes-1] = indices_each_node_case[4][n_nodes-5]
+    print("Equal or not Queal?", np.array_equal(indices_each_node_case[4][n_nodes-1], indices_each_node_case[4][n_nodes-1])) #Manually last node is the same as node before
+    random.shuffle(indices_each_node_case[4][n_nodes-1])
 
         # Case 5 just shuffel to have different combinations
         #indices_each_node_case[4][(i % n_nodes)].append(i)

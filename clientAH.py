@@ -115,10 +115,27 @@ try:
                 # Create the list of indicies to be changed
                 for i in range(0, int(number_of_malicious_indicies_needed)):
                     malicious_indicies.append(randomised_indicies[i])
-                
+
+                #Save original train_label
+                train_label_orig = train_label
+
+                #Options:"bool_switch", "unvalid_0to9", "random_0to9", "unvalid_bool" --> defined in Config File!
                 for element in malicious_indicies:
                     # switch 1 and -1 
-                    train_label[element] = train_label[element] * -1
+                    if type_malicious == "bool_switch":
+                        train_label[element] = train_label[element] * -1
+                        print("Label switched for bool case")
+                    elif type_malicious == "unvalid_bool":
+                        train_label[element] = 10             
+                        print("Label = 0, unvalid for bool case")
+                    elif type_malicious == "random_0to9":
+                        train_label[element] =  random.randint(0, 9) 
+                        print("Label random 0 to 9, non-bool case")
+                    elif type_malicious == "unvalid_0to9":
+                        train_label[element] = -1
+                        print("Label -1, unvalid, non-bool case")
+                    else:
+                        print("ERROR NO MALICIOUSNESS which is programmed, check!!!")
 
             # calculate new w
             grad = model.gradient(train_image, train_label, w, train_indices)
@@ -126,9 +143,8 @@ try:
             # Change it back after to restore original dataset (also for loss calculation)
             if(client_malicious and total_iterations >= round_turning_malicious and total_iterations < round_turning_healthy_again):
 
-                for element in malicious_indicies:
-                    # switch 1 and -1 back 
-                    train_label[element] = train_label[element] * -1
+                #Restore original train label
+                train_label = train_label_orig
 
             # Calculate old loss - before updating w!
             loss_last_global = model.loss(train_image, train_label, w, train_indices)

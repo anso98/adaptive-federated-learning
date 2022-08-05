@@ -9,6 +9,7 @@ from matplotlib import pyplot as plt
 from datetime import datetime, time
 from all_cases_analyser import *
 import time
+from configAH import storing_type
 #from mpmath import mp, mpf
 
 
@@ -63,60 +64,60 @@ class Analayser:
         for i in range(0, n_nodes):
             self.node_updates[i] = False
 
-        #INSERTED JUST FOR LAB MACHINES MANUAL CHANGE NEEDED EVERY RUNTHROUGH!
-        current_directory = os. getcwd() 
-        name = "boolean_folder/"
-        self.overall_folder_path = os.path.join(current_directory, 'analysis_results/' + name)
-
-        if ((self.case == 0 and self.total_run_through == True)) or self.total_run_through == False:
-            if not os.path.exists(self.overall_folder_path):
-                os.makedirs(self.overall_folder_path)
-            else:
-                print("ERROR: PATH ALREADY EXISTS REDO!")
-
-        #UNCOMMENT THIS FOR THE REAL FOLDER STRUCTURE!!
-        #  # Create new folder with all new information
-        # current_directory = os. getcwd() 
-        # day_time = (datetime.today().strftime('%Y-%m-%d') + ': ' + str(self.highest_case) +' cases/')
-        # self.overall_folder_path = os.path.join(current_directory, 'analysis_results/' + day_time)
-    
-        # # Create new folder if it does not exists (if in case 0)
-        # make_new_folder = False
-        # if (self.case == 0 and self.total_run_through == True):
-        #     make_new_folder = True
-        # elif(self.total_run_through == False):
-        #     make_new_folder = True
-
-        # # This creates a new Foder with the date stamp!
-        # if make_new_folder:
-        #     if not os.path.exists(self.overall_folder_path):
-        #         os.makedirs(self.overall_folder_path)
-        #     else:
-        #         folder_exists_already = True
-        #         iterator = 1
-        #         while(folder_exists_already):
-        #             new_day_time = (datetime.today().strftime('%Y-%m-%d') + ': ' + str(self.highest_case) +' cases -- ' + str(iterator) + '/')
-        #             self.overall_folder_path = os.path.join(current_directory, 'analysis_results/' + new_day_time)
-        #             if not os.path.exists(self.overall_folder_path):
-        #                 os.makedirs(self.overall_folder_path)
-        #                 folder_exists_already = False
-        #             else:
-        #                 iterator += 1
+        #DEPENDING ON IF I NEED TO RUN A MODEL OVERNIGHT!
+        if storing_type == "date":
+            current_directory = os. getcwd() 
+            day_time = (datetime.today().strftime('%Y-%m-%d') + ': ' + str(self.highest_case) +' cases/')
+            self.overall_folder_path = os.path.join(current_directory, 'analysis_results/' + day_time)
         
-        # # in all other cases, assume no more than 15 folders per day:
-        # if (self.case != 0 and self.total_run_through == True):
-        #     iterator = 15
-        #     folder_exists = False
-        #     while(folder_exists == False and iterator >= 0):
-        #         new_day_time = (datetime.today().strftime('%Y-%m-%d') + ': ' + str(self.highest_case) +' cases -- ' + str(iterator) + '/')
-        #         temp_overall_folder_path = os.path.join(current_directory, 'analysis_results/' + new_day_time)
-                
-        #         # if this exists take that folder
-        #         if os.path.exists(temp_overall_folder_path):
-        #             self.overall_folder_path = temp_overall_folder_path
-        #             folder_exists = True
-        #         else:
-        #             iterator -= 1
+            # Create new folder if it does not exists (if in case 0)
+            make_new_folder = False
+            if (self.case == 0 and self.total_run_through == True):
+                make_new_folder = True
+            elif(self.total_run_through == False):
+                make_new_folder = True
+
+            # This creates a new Foder with the date stamp!
+            if make_new_folder:
+                if not os.path.exists(self.overall_folder_path):
+                    os.makedirs(self.overall_folder_path)
+                else:
+                    folder_exists_already = True
+                    iterator = 1
+                    while(folder_exists_already):
+                        new_day_time = (datetime.today().strftime('%Y-%m-%d') + ': ' + str(self.highest_case) +' cases -- ' + str(iterator) + '/')
+                        self.overall_folder_path = os.path.join(current_directory, 'analysis_results/' + new_day_time)
+                        if not os.path.exists(self.overall_folder_path):
+                            os.makedirs(self.overall_folder_path)
+                            folder_exists_already = False
+                        else:
+                            iterator += 1
+            
+            # in all other cases, assume no more than 15 folders per day:
+            if (self.case != 0 and self.total_run_through == True):
+                iterator = 15
+                folder_exists = False
+                while(folder_exists == False and iterator >= 0):
+                    new_day_time = (datetime.today().strftime('%Y-%m-%d') + ': ' + str(self.highest_case) +' cases -- ' + str(iterator) + '/')
+                    temp_overall_folder_path = os.path.join(current_directory, 'analysis_results/' + new_day_time)
+                    
+                    # if this exists take that folder
+                    if os.path.exists(temp_overall_folder_path):
+                        self.overall_folder_path = temp_overall_folder_path
+                        folder_exists = True
+                    else:
+                        iterator -= 1
+        else: 
+        #INSERTED JUST FOR LAB MACHINES -> change storing_Type variable!
+            current_directory = os. getcwd() 
+            name = storing_type + "/"
+            self.overall_folder_path = os.path.join(current_directory, 'analysis_results/' + name)
+
+            if ((self.case == 0 and self.total_run_through == True)) or self.total_run_through == False:
+                if not os.path.exists(self.overall_folder_path):
+                    os.makedirs(self.overall_folder_path)
+                else:
+                    print("ERROR: PATH ALREADY EXISTS REDO!", flush=True)
 
         
     def newData(self, weights, node_number):
