@@ -3,17 +3,14 @@
 # RMI Data
 SERVER_ADDR= 'localhost'   # When running in a real distributed setting, change to the server's IP address
 SERVER_PORT = 51000
-#sim_runs = 5 # I am defining it rn as the number of times the central server receives an update from it's clients # don't need sim rounds right now!
 
 # Model, dataset, and control parameter configurations for MNIST with CNN
 # dataset = 'MNIST_ORIG_ALL_LABELS'  # Use for CNN model
 # model_name = 'ModelCNNMnist'
-# control_param_phi = 0.00005   # Good for CNN
 
 # Model, dataset, and control parameter configurations for CIFAR-10 with CNN
 #dataset = 'CIFAR_10'
 #model_name = 'ModelCNNCifar10'
-# control_param_phi = 0.00005   # Good for CNN
 
 model_name = 'ModelSVMSmooth'
 dataset = "MNIST_ORIG_EVEN_ODD"
