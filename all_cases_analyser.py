@@ -70,9 +70,9 @@ def all_cases_analysis(folder_for_csv, highest_case, update_rounds,n_nodes):
         this_label = str(round((i/n_nodes)*100, 0)) + "%" 
         plt.plot(this_list_percentages_data_cases, accuracy_array[i], "-o",label = this_label)
         #TITLE
-    plt.suptitle("Maximum accuracy in FL system", fontsize = 18, fontweight="bold")
-    title =  str(n_nodes) + " nodes, " + str(update_rounds) + " update rounds"
-    plt.title(title, fontsize = 16)
+    #plt.suptitle("Maximum accuracy in FL system", fontsize = 18, fontweight="bold")
+    #title =  str(n_nodes) + " nodes, " + str(update_rounds) + " update rounds"
+    #plt.title(title, fontsize = 16)
         #LABLE
     plt.xlabel("Share of Malicious Data (in %)", fontsize = 14)
     plt.ylabel("Accuracy", fontsize = 14)
@@ -108,9 +108,9 @@ def all_cases_analysis(folder_for_csv, highest_case, update_rounds,n_nodes):
         this_label = str(round((i/n_nodes)*100, 0)) + "%" 
         plt.plot(this_list_percentages_data_cases, loss_array[i], '-o',label = this_label)
         #TITLE
-    plt.suptitle("Minimum loss in FL system", fontsize = 18, fontweight="bold")
+    #plt.suptitle("Minimum loss in FL system", fontsize = 18, fontweight="bold")
     title =  str(n_nodes) + " nodes, " + str(update_rounds) + " update rounds"
-    plt.title(title, fontsize = 16)
+    #plt.title(title, fontsize = 16)
         #LABEL
     plt.xlabel("Share of Malicious Data (in %)", fontsize = 14)
     plt.ylabel("Loss", fontsize = 14)
@@ -145,9 +145,9 @@ def all_cases_analysis(folder_for_csv, highest_case, update_rounds,n_nodes):
         this_label = str(round((i/n_nodes)*100, 0)) + "%" 
         plt.plot(this_list_percentages_data_cases, last_accuracy_array[i], '-o', label = this_label)
         #TITLE
-    plt.suptitle("Last round accuracy in FL system", fontsize = 18, fontweight = "bold")
-    title =  str(n_nodes) + " nodes, " + str(update_rounds) + " update rounds"
-    plt.title(title, fontsize = 16)
+    #plt.suptitle("Last round accuracy in FL system", fontsize = 18, fontweight = "bold")
+    #title =  str(n_nodes) + " nodes, " + str(update_rounds) + " update rounds"
+    #plt.title(title, fontsize = 16)
         #LABELS
     plt.xlabel("Share of Malicious Data (in %)", fontsize = 14)
     plt.ylabel("Accuracy", fontsize = 14)
@@ -182,9 +182,9 @@ def all_cases_analysis(folder_for_csv, highest_case, update_rounds,n_nodes):
         #this_label = str(i) + " nodes malicious" OLD
         plt.plot(this_list_percentages_data_cases, last_loss_array[i], '-o', label = this_label)
         #TITLE
-    plt.suptitle("Last round loss in FL system", fontsize = 18, fontweight = "bold")
-    title =  str(n_nodes) + " nodes, " + str(update_rounds) + " update rounds"
-    plt.title(title, fontsize = 16)
+    #plt.suptitle("Last round loss in FL system", fontsize = 18, fontweight = "bold")
+    #title =  str(n_nodes) + " nodes, " + str(update_rounds) + " update rounds"
+    #plt.title(title, fontsize = 16)
         #LABEL
     plt.xlabel("Share of Malicious Data (in %)", fontsize = 14)
     plt.ylabel("Loss", fontsize = 14)
@@ -234,9 +234,9 @@ def all_cases_analysis(folder_for_csv, highest_case, update_rounds,n_nodes):
         label_line ='malicious node turns healthy again'
         plt.axvline(x = round_turning_healthy_again, label=label_line, color = 'grey')
         #TITLE
-    plt.suptitle("Average Model Parameter (in last round) in FL system", fontsize = 18, fontweight = "bold")
-    title =  str(n_nodes) + " nodes, " + str(update_rounds) + " update rounds"
-    plt.title(title, fontsize = 16)
+    #plt.suptitle("Average Model Parameter (in last round) in FL system", fontsize = 18, fontweight = "bold")
+    #title =  str(n_nodes) + " nodes, " + str(update_rounds) + " update rounds"
+    #plt.title(title, fontsize = 16)
         #LABLE
     plt.xlabel("Share of Malicious Data (in %)", fontsize = 14)
     plt.ylabel("Average Model Parameter", fontsize = 14)
@@ -281,9 +281,9 @@ def all_cases_analysis(folder_for_csv, highest_case, update_rounds,n_nodes):
         label_line ='malicious node turns healthy again'
         plt.axvline(x = round_turning_healthy_again, label=label_line, color = 'grey')
         #TITLE
-    plt.suptitle("Average Model Parameter in FL system", fontsize = 18, fontweight = "bold")
-    title =  str(n_nodes) + " nodes, " + str(update_rounds) + " update rounds"
-    plt.title(title, fontsize = 16)
+    #plt.suptitle("Average Model Parameter in FL system", fontsize = 18, fontweight = "bold")
+    #title =  str(n_nodes) + " nodes, " + str(update_rounds) + " update rounds"
+    #plt.title(title, fontsize = 16)
         #LABLE
     plt.xlabel("Update Rounds", fontsize = 14)
     plt.ylabel("Average Model Parameter", fontsize = 14)
@@ -318,9 +318,9 @@ def all_cases_analysis(folder_for_csv, highest_case, update_rounds,n_nodes):
         label_line ='malicious node turns healthy again'
         plt.axvline(x = round_turning_healthy_again, label=label_line, color = 'grey')
         #TITLE
-    plt.suptitle("Average Model Parameter in FL system", fontsize = 18, fontweight = "bold")
-    title =  str(n_nodes) + " nodes, " + str(update_rounds) + " update rounds"
-    plt.title(title, fontsize = 16)
+    #plt.suptitle("Average Model Parameter in FL system", fontsize = 18, fontweight = "bold")
+    #title =  str(n_nodes) + " nodes, " + str(update_rounds) + " update rounds"
+    #plt.title(title, fontsize = 16)
         #LABEL
     plt.xlabel("Update Rounds", fontsize = 14)
     plt.ylabel("Average Model Parameter", fontsize = 14)
@@ -352,9 +352,9 @@ def all_cases_analysis(folder_for_csv, highest_case, update_rounds,n_nodes):
         label_line ='malicious node turns healthy again'
         plt.axvline(x = round_turning_healthy_again, label=label_line, color = 'grey')
         #TITLE
-    plt.suptitle("Average Model Parameter in FL system", fontsize = 18, fontweight = "bold")
-    title =  str(n_nodes) + " nodes, " + str(update_rounds) + " update rounds"
-    plt.title(title, fontsize = 16)
+    #plt.suptitle("Average Model Parameter in FL system", fontsize = 18, fontweight = "bold")
+    #title =  str(n_nodes) + " nodes, " + str(update_rounds) + " update rounds"
+    #plt.title(title, fontsize = 16)
         #LABEL
     plt.xlabel("Update Rounds", fontsize = 14)
     plt.ylabel("Average Model Parameter", fontsize = 14)
@@ -386,9 +386,9 @@ def all_cases_analysis(folder_for_csv, highest_case, update_rounds,n_nodes):
         label_line ='malicious node turns healthy again'
         plt.axvline(x = round_turning_healthy_again, label=label_line, color = 'grey')
         #TITLE
-    plt.suptitle("Average Model Parameter in FL system", fontsize = 18, fontweight = "bold")
-    title =  str(n_nodes) + " nodes, " + str(update_rounds) + " update rounds"
-    plt.title(title, fontsize = 16)
+    #plt.suptitle("Average Model Parameter in FL system", fontsize = 18, fontweight = "bold")
+    #title =  str(n_nodes) + " nodes, " + str(update_rounds) + " update rounds"
+    #plt.title(title, fontsize = 16)
         #LABEL
     plt.xlabel("Update Rounds", fontsize = 14)
     plt.ylabel("Average Model Parameter", fontsize = 14)
@@ -433,9 +433,9 @@ def all_cases_analysis(folder_for_csv, highest_case, update_rounds,n_nodes):
         #this_label = "Case " + str(element) + ": " + case_label
         plt.plot(all_nodes_weights[i], label = case_label)
         #TITLE
-    plt.suptitle("Average Model Parameter of node \n in healthy and malicious state", fontsize = 18, fontweight = "bold")
-    title =  str(n_nodes) + " nodes, " + str(update_rounds) + " update rounds"
-    plt.title(title, fontsize = 16)
+    #plt.suptitle("Average Model Parameter of node \n in healthy and malicious state", fontsize = 18, fontweight = "bold")
+    #title =  str(n_nodes) + " nodes, " + str(update_rounds) + " update rounds"
+    #plt.title(title, fontsize = 16)
         #LABEL
     plt.xlabel("Update Rounds", fontsize = 14)
     plt.ylabel("Average Model Parameter", fontsize = 14)
@@ -482,9 +482,9 @@ def all_cases_analysis(folder_for_csv, highest_case, update_rounds,n_nodes):
         #this_label = "Case " + str(element) + ": " + case_label
         plt.plot(mov_ave_weights_all_nodes[i], label = case_label)
         #TITLE
-    plt.suptitle("Moving Average (10 values) Model Parameter of node \n in healthy and malicious state", fontsize = 18, fontweight = "bold")
-    title =  str(n_nodes) + " nodes, " + str(update_rounds) + " update rounds"
-    plt.title(title, fontsize = 16)
+    #plt.suptitle("Moving Average (10 values) Model Parameter of node \n in healthy and malicious state", fontsize = 18, fontweight = "bold")
+    #title =  str(n_nodes) + " nodes, " + str(update_rounds) + " update rounds"
+    #plt.title(title, fontsize = 16)
         #LABEL
     plt.xlabel("Update Rounds", fontsize = 14)
     plt.ylabel("Average Model Parameter", fontsize = 14)

@@ -9,8 +9,10 @@ from matplotlib import pyplot as plt
 from datetime import datetime, time
 from all_cases_analyser import *
 import time
-from configAH import storing_type
+from configAH import storing_type, moving_average_of, percentage_of_weights_concidered_lim_case
 #from mpmath import mp, mpf
+import textwrap
+
 
 
 class Analayser:
@@ -223,8 +225,8 @@ class Analayser:
             label_line ='Maliciousness ends'
             plt.axvline(x = self.round_turning_healthy_again, label=label_line, color = 'grey')        
             #TITLE
-        plt.title(str(self.percentage_of_malicious_nodes) + "% malicious nodes (" + str(self.percentage_malicious_data*100) + "% malicious data) - " +str(self.number_of_nodes) + " nodes", fontsize = 16)
-        plt.suptitle("Average model parameter of nodes (Case " + str(self.case) + ")", fontsize = 18, fontweight = 'bold') # (from 784 param)
+        #plt.title(str(self.percentage_of_malicious_nodes) + "% malicious nodes (" + str(self.percentage_malicious_data*100) + "% malicious data) - " +str(self.number_of_nodes) + " nodes", fontsize = 16)
+        #plt.suptitle("Average model parameter of nodes (Case " + str(self.case) + ")", fontsize = 18, fontweight = 'bold') # (from 784 param)
             #LABLE
         plt.xlabel("Update Round", fontsize = 14)
         plt.ylabel("Average model parameter", fontsize = 14)
@@ -251,8 +253,8 @@ class Analayser:
             label_line ='Maliciousness ends'
             plt.axvline(x = self.round_turning_healthy_again, label=label_line, color = 'grey')  
             #TITLE
-        plt.title(str(self.percentage_of_malicious_nodes) + "% malicious nodes (" + str(self.percentage_malicious_data*100) + "% malicious data) - " +str(self.number_of_nodes) + " nodes", fontsize = 16)
-        plt.suptitle("Loss of global model over update rounds (Case " + str(self.case) + ")", fontsize = 18, fontweight = "bold")
+        #plt.title(str(self.percentage_of_malicious_nodes) + "% malicious nodes (" + str(self.percentage_malicious_data*100) + "% malicious data) - " +str(self.number_of_nodes) + " nodes", fontsize = 16)
+        #plt.suptitle("Loss of global model over update rounds (Case " + str(self.case) + ")", fontsize = 18, fontweight = "bold")
             #LABLE
         plt.xlabel("Update Round", fontsize = 14)
         plt.ylabel("Loss", fontsize = 14)
@@ -279,8 +281,8 @@ class Analayser:
             label_line ='Maliciousness ends'
             plt.axvline(x = self.round_turning_healthy_again, label=label_line, color = 'grey')  
             #TITLE
-        plt.title(str(self.percentage_of_malicious_nodes) + "% malicious nodes (" + str(self.percentage_malicious_data*100) + "% malicious data) - " +str(self.number_of_nodes) + " nodes", fontsize = 16)
-        plt.suptitle("Accuracy of global model over update rounds (Case " + str(self.case) + ")", fontsize = 18, fontweight = "bold")
+        #plt.title(str(self.percentage_of_malicious_nodes) + "% malicious nodes (" + str(self.percentage_malicious_data*100) + "% malicious data) - " +str(self.number_of_nodes) + " nodes", fontsize = 16)
+        #plt.suptitle("Accuracy of global model over update rounds (Case " + str(self.case) + ")", fontsize = 18, fontweight = "bold")
             #LABLES
         fig4 = plt.xlabel("Update Round", fontsize = 14)
         fig4 = plt.ylabel("Accuracy", fontsize = 14)
@@ -297,12 +299,6 @@ class Analayser:
        ####################
         #MSE Calculation
         ####################
-
-        #++++++++++++++++++++++++++++++++++++++++++++++++++#
-        #Variable definition for analysis
-        moving_average_of = 10
-        percentage_of_weights_concidered_lim_case = 0.01
-        #++++++++++++++++++++++++++++++++++++++++++++++++++#
 
         time_all_weights = []
         time_all_weights.append(time.time()) #0
@@ -465,9 +461,6 @@ class Analayser:
         for i in range(0, self.max_rounds):
             sum_accross_nodes = 0
             for k in range(0, self.number_of_nodes):
-                #if( abs(save_all_means[i][j]) < 1e-25): # check here
-                    #array_mean_relative_mse[k][i] = 0
-                #else:
                 array_median_relative_mse[k][i] = array_with_accum_mse[k][i] / array_median_error_all_nodes[i]
 
         time_all_weights.append(time.time()) #4
@@ -495,11 +488,14 @@ class Analayser:
             label_line ='Maliciousness starts'
             plt.axvline(x = self.round_turning_healthy_again, label=label_line, color = 'grey')
             #TITLE
-        plt.suptitle("Relative MSE of model parameters accross all nodes (Case " + str(self.case) + ")", fontsize = 18, fontweight = "bold")
-        plt.title(str(self.percentage_of_malicious_nodes) + "% malicious nodes (" + str(self.percentage_malicious_data*100) + "% malicious data) - " +str(self.number_of_nodes) + " nodes", fontsize = 16, pad = 20)
+        #plt.suptitle("Relative MSE of model parameters accross all nodes (Case " + str(self.case) + ")", fontsize = 18, fontweight = "bold")
+        #plt.title(str(self.percentage_of_malicious_nodes) + "% malicious nodes (" + str(self.percentage_malicious_data*100) + "% malicious data) - " +str(self.number_of_nodes) + " nodes", fontsize = 16, pad = 20)
             #LABLE
         plt.xlabel("Update Round", fontsize = 14)
-        plt.ylabel("Relative MSE of model parameters", fontsize = 14)
+        #plt.ylabel("Relative average MSE of model parameters", fontsize = 14)
+        y_label_text = "Relative average MSE of model parameters"
+        y_label = textwrap.fill(y_label_text, width=25, break_long_words=False)
+        plt.ylabel(y_label, fontsize = 14)
         plt.ylim([0,0.0003])
         plt.xticks(fontsize=14)
         plt.yticks(fontsize=14)
@@ -561,11 +557,14 @@ class Analayser:
             label_line ='Maliciousness ends'
             plt.axvline(x = self.round_turning_healthy_again, label=label_line, color = 'grey')
             #TITLE
-        plt.suptitle("Moving Average (" +str(moving_average_of) + " values) relative MSE of model parameters \n accross all nodes (Case " + str(self.case) + ")", fontsize = 18, fontweight = "bold")
-        plt.title(str(self.percentage_of_malicious_nodes) + "% malicious nodes (" + str(self.percentage_malicious_data*100) + "% malicious data) - " +str(self.number_of_nodes) + " nodes", fontsize = 16, pad = 20)
+        #plt.suptitle("Moving Average (" +str(moving_average_of) + " values) relative MSE of model parameters \n accross all nodes (Case " + str(self.case) + ")", fontsize = 18, fontweight = "bold")
+        #plt.title(str(self.percentage_of_malicious_nodes) + "% malicious nodes (" + str(self.percentage_malicious_data*100) + "% malicious data) - " +str(self.number_of_nodes) + " nodes", fontsize = 16, pad = 20)
             #LABLE
         plt.xlabel("Update Round", fontsize = 14)
-        plt.ylabel("Relative MSE of model parameters", fontsize = 14)
+        #plt.ylabel("Relative MSE of model parameters", fontsize = 14)
+        y_label_text = "Relative average MSE of model parameters"
+        y_label = textwrap.fill(y_label_text, width=25, break_long_words=False)
+        plt.ylabel(y_label, fontsize = 14)
         plt.xticks(fontsize=14)
         plt.yticks(fontsize=14)
             #LEGEND
@@ -636,11 +635,14 @@ class Analayser:
             label_line ='Maliciousness ends'
             plt.axvline(x = self.round_turning_healthy_again, label=label_line, color = 'grey')
             #TITLE
-        plt.suptitle("Relative MSE of model parameters accross all nodes (Case " + str(self.case) + ")", fontsize = 18, fontweight = "bold")
-        plt.title(str(self.percentage_of_malicious_nodes) + "% malicious nodes (" + str(self.percentage_malicious_data*100) + "% malicious data) - " +str(self.number_of_nodes) + " nodes", fontsize = 16, pad = 20)
+        #plt.suptitle("Relative MSE of model parameters accross all nodes (Case " + str(self.case) + ")", fontsize = 18, fontweight = "bold")
+        #plt.title(str(self.percentage_of_malicious_nodes) + "% malicious nodes (" + str(self.percentage_malicious_data*100) + "% malicious data) - " +str(self.number_of_nodes) + " nodes", fontsize = 16, pad = 20)
             #LABLE
         plt.xlabel("Update Round", fontsize = 14)
-        plt.ylabel("Relative MSE of model parameters", fontsize = 14)
+        #plt.ylabel("Relative average MSE of model parameters", fontsize = 14)
+        y_label_text = "Relative average MSE of model parameters"
+        y_label = textwrap.fill(y_label_text, width=25, break_long_words=False)
+        plt.ylabel(y_label, fontsize = 14)
         plt.ylim([0,0.0003])
         plt.xticks(fontsize=14)
         plt.yticks(fontsize=14)
@@ -698,11 +700,14 @@ class Analayser:
             label_line ='Maliciousness ends'
             plt.axvline(x = self.round_turning_healthy_again, label=label_line, color = 'grey')
             #TITLE
-        plt.suptitle("Moving Average (" +str(moving_average_of) + " values) relative MSE of model parameters \n accross all nodes (Case " + str(self.case) + ")", fontsize = 18, fontweight = "bold")
-        plt.title(str(self.percentage_of_malicious_nodes) + "% malicious nodes (" + str(self.percentage_malicious_data*100) + "% malicious data) - " +str(self.number_of_nodes) + " nodes", fontsize = 16, pad = 20)
+        #plt.suptitle("Moving Average (" +str(moving_average_of) + " values) relative MSE of model parameters \n accross all nodes (Case " + str(self.case) + ")", fontsize = 18, fontweight = "bold")
+        #plt.title(str(self.percentage_of_malicious_nodes) + "% malicious nodes (" + str(self.percentage_malicious_data*100) + "% malicious data) - " +str(self.number_of_nodes) + " nodes", fontsize = 16, pad = 20)
             #LABLE
         plt.xlabel("Update Round", fontsize = 14)
-        plt.ylabel("Relative MSE of model parameters", fontsize = 14)
+        #plt.ylabel("Relative average MSE of model parameters", fontsize = 14)
+        y_label_text = "Relative average MSE of model parameters"
+        y_label = textwrap.fill(y_label_text, width=25, break_long_words=False)
+        plt.ylabel(y_label, fontsize = 14)
         plt.xticks(fontsize=14)
         plt.yticks(fontsize=14)
         #plt.ylim([0,10])
@@ -722,7 +727,7 @@ class Analayser:
         # Probably the mean? 
 
         time_lim_weights =[]
-        time_lim_weights.append(time.time())
+        time_lim_weights.append(time.time()) #0
 
         # Get the mean
         save_all_means = np.zeros((self.max_rounds, self.number_of_parameters))
@@ -736,7 +741,7 @@ class Analayser:
                 means_per_round[j] = sum_of_parameter
             save_all_means[i] = means_per_round
 
-        time_lim_weights.append(time.time())
+        time_lim_weights.append(time.time()) #1
         print("Time to get means:",  time_lim_weights[1]-time_lim_weights[0])
 
         number_of_weights_concidered = int(self.number_of_parameters * percentage_of_weights_concidered_lim_case)
@@ -845,11 +850,14 @@ class Analayser:
             label_line ='Maliciousness ends'
             plt.axvline(x = self.round_turning_healthy_again, label=label_line, color = 'grey')
             #TITLE
-        plt.suptitle("Relative MSE of top abs. " + str(int(percentage_of_weights_concidered_lim_case * 100)) +"% model parameters accross all nodes (Case " + str(self.case) + ")", fontsize = 18, fontweight = "bold")
-        plt.title(str(self.percentage_of_malicious_nodes) + "% malicious nodes (" + str(self.percentage_malicious_data*100) + "% malicious data) - " +str(self.number_of_nodes) + " nodes", fontsize = 16, pad = 20)
+        #plt.suptitle("Relative MSE of top abs. " + str(int(percentage_of_weights_concidered_lim_case * 100)) +"% model parameters accross all nodes (Case " + str(self.case) + ")", fontsize = 18, fontweight = "bold")
+        #plt.title(str(self.percentage_of_malicious_nodes) + "% malicious nodes (" + str(self.percentage_malicious_data*100) + "% malicious data) - " +str(self.number_of_nodes) + " nodes", fontsize = 16, pad = 20)
             #LABLE
         plt.xlabel("Update Round", fontsize = 14)
-        plt.ylabel("Relative MSE of model parameters", fontsize = 14)
+        #plt.ylabel("Relative average MSE of model parameters", fontsize = 14)
+        y_label_text = "Relative average MSE of model parameters"
+        y_label = textwrap.fill(y_label_text, width=25, break_long_words=False)
+        plt.ylabel(y_label, fontsize = 14)
         plt.ylim([0,0.0003])
         plt.xticks(fontsize=14)
         plt.yticks(fontsize=14)
@@ -914,11 +922,14 @@ class Analayser:
             label_line ='Maliciousness ends'
             plt.axvline(x = self.round_turning_healthy_again, label=label_line, color = 'grey')
             #TITLE
-        plt.suptitle("Moving Average (" +str(moving_average_of) + " values) relative MSE of top abs. " + str(int(percentage_of_weights_concidered_lim_case * 100)) + "% model parameters \n accross all nodes (Case " + str(self.case) + ")", fontsize = 18, fontweight = "bold")
-        plt.title(str(self.percentage_of_malicious_nodes) + "% malicious nodes (" + str(self.percentage_malicious_data*100) + "% malicious data) - " +str(self.number_of_nodes) + " nodes", fontsize = 16, pad = 20)
+        #plt.suptitle("Moving Average (" +str(moving_average_of) + " values) relative MSE of top abs. " + str(int(percentage_of_weights_concidered_lim_case * 100)) + "% model parameters \n accross all nodes (Case " + str(self.case) + ")", fontsize = 18, fontweight = "bold")
+        #plt.title(str(self.percentage_of_malicious_nodes) + "% malicious nodes (" + str(self.percentage_malicious_data*100) + "% malicious data) - " +str(self.number_of_nodes) + " nodes", fontsize = 16, pad = 20)
             #LABLE
         plt.xlabel("Update Round", fontsize = 14)
-        plt.ylabel("Relative MSE of model parameters", fontsize = 14)
+        #plt.ylabel("Relative average MSE of model parameters", fontsize = 14)
+        y_label_text = "Relative average MSE of model parameters"
+        y_label = textwrap.fill(y_label_text, width=25, break_long_words=False)
+        plt.ylabel(y_label, fontsize = 14)
         plt.xticks(fontsize=14)
         plt.yticks(fontsize=14)
         #plt.ylim([0,10])

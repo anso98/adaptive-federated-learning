@@ -101,6 +101,7 @@ try:
             if(client_malicious and total_iterations >= round_turning_malicious and total_iterations < round_turning_healthy_again):
 
                 print("Check I am in malicious indicies creation loop")
+                print("Iteration:", total_iterations)
                 # create a copy and shuffle indicies to maintain randomness
                 randomised_indicies = train_indices
                 random.shuffle(randomised_indicies)
@@ -116,24 +117,23 @@ try:
                 for i in range(0, int(number_of_malicious_indicies_needed)):
                     malicious_indicies.append(randomised_indicies[i])
 
-                #Save original train_label
-                train_label_orig = train_label
+                #Initalise original train_label
+                train_label_orig_mal_indices = []
 
                 #Options:"bool_switch", "unvalid_0to9", "random_0to9", "unvalid_bool" --> defined in Config File!
                 for element in malicious_indicies:
+                    #save original value
+                    train_label_orig_mal_indices.append(train_label[element])
+                    
                     # switch 1 and -1 
                     if type_malicious == "bool_switch":
                         train_label[element] = train_label[element] * -1
-                        print("Label switched for bool case")
                     elif type_malicious == "unvalid_bool":
                         train_label[element] = 10             
-                        print("Label = 0, unvalid for bool case")
                     elif type_malicious == "random_0to9":
                         train_label[element] =  random.randint(0, 9) 
-                        print("Label random 0 to 9, non-bool case")
                     elif type_malicious == "unvalid_0to9":
                         train_label[element] = -1
-                        print("Label -1, unvalid, non-bool case")
                     else:
                         print("ERROR NO MALICIOUSNESS which is programmed, check!!!")
 
@@ -142,9 +142,9 @@ try:
 
             # Change it back after to restore original dataset (also for loss calculation)
             if(client_malicious and total_iterations >= round_turning_malicious and total_iterations < round_turning_healthy_again):
-
                 #Restore original train label
-                train_label = train_label_orig
+                for i in range(0, len(malicious_indicies)):
+                    train_label[int(malicious_indicies[i])] = train_label_orig_mal_indices[i]
 
             # Calculate old loss - before updating w!
             loss_last_global = model.loss(train_image, train_label, w, train_indices)

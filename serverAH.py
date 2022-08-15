@@ -3,6 +3,7 @@ from models.get_model import get_model
 from data_reader.data_reader import get_data
 from util.utils import send_msg, recv_msg, get_indices_each_node_case
 from configAH import *
+from detectionTool import MaliciousUserDetection
 
 import socket
 import numpy as np
@@ -48,8 +49,6 @@ case = -1  #define invalid starting case -> will be updated in next line!
 
 
 while(execute_next_case):
-
-    #NOTE: need to think about how to connect and disconnect, or leave connection but just send new parameters and model? Not probably does not make sense, just new connection is the easiest
 
     #check here if full analysis should be ran or just simple test case
     if(full_analysis_all_cases == True):
@@ -123,6 +122,9 @@ while(execute_next_case):
         round_turning_malicious = percentage_round_where_clients_turn_malicious * max_rounds
         round_turning_healthy_again = percentage_round_where_clients_turn_healthy_again * max_rounds
 
+        print("Round turning healthy again", round_turning_healthy_again)
+        print("Round turning malicious", round_turning_malicious)
+
         # Send data 
         msg = ['MSG_INIT_SERVER_TO_CLIENT', model_name, dataset, step_size,
                 batch_size, total_data, indices_this_node, number_this_node, client_malicious, percentage_of_maliciousness, round_turning_malicious, round_turning_healthy_again]
@@ -168,6 +170,10 @@ while(execute_next_case):
     number_of_parameters = len(w_global)
     analyser = Analayser(n_nodes, number_of_parameters, max_rounds, case, number_of_malicious_nodes, percentage_malicious_data, full_analysis_all_cases, highest_case, which_node_malicious_array, round_turning_malicious, round_turning_healthy_again)
 
+    #Start Detection Tool
+    if detection_system_activated == True:
+        maliciousUserDetection = MaliciousUserDetection(number_of_parameters, n_nodes, rounds_to_store)
+
     while True:
 
         if (iterator + 1) == max_rounds:
@@ -190,6 +196,7 @@ while(execute_next_case):
         data_size_total = 0
         time_all_local_all = 0
         data_size_local_all = []
+        w_nodes = np.zeros((n_nodes, dim_w))
 
         for n in range(0, n_nodes):
             # delete what I don't need here!
@@ -201,15 +208,42 @@ while(execute_next_case):
             number_this_node = msg[4]
 
             #note: Tiffany did the w_global with the size of the local data (antteilig), I rather would do it equaliy, to test my model later! So changed this! (see in server.py)
-            w_global += w_local
-            loss_last_global += loss_local_last_global
+            #w_global += w_local
+            #loss_last_global += loss_local_last_global
+
+            # Store w_nodes
+            w_nodes[n] = w_local
 
             # Analyser code!
             analyser.newData(w_local, number_this_node)
 
-        w_global /= n_nodes
-        analyser.newData(w_global, n_nodes)
-        loss_last_global /= n_nodes
+        #w_global /= n_nodes
+        #analyser.newData(w_global, n_nodes)
+        loss_last_global /= n_nodes #FOR what do I need this?
+
+        # *--------------------- INSERTED MALCIOUS DETECTION TOOL----------*
+
+        # CHECK FOR MALICIOUSNESS - if malicious, then take it out of the equation!
+        if detection_system_activated == True: 
+            print("DETECTION SYSTEM ACTIVATED")
+            node_classification_healthy = maliciousUserDetection.return_malicious_or_not_malcious( w_nodes, threshold)
+            counter_of_nodes_considered = 0
+
+            # PROGRAMMING to take maliciousness 
+            for n in range(0, len(node_classification_healthy)):
+                if node_classification_healthy[n] == True:
+                    w_global += w_nodes[n]
+                    counter_of_nodes_considered += 1
+        else:
+            # Use all nodes when detection system is not activated       
+            for n in range(0, n_nodes):
+                w_global += w_nodes[n]
+            counter_of_nodes_considered = n_nodes
+
+        # Calculating Global w
+        print("We considered in total", counter_of_nodes_considered, "nodes")
+        w_global /= counter_of_nodes_considered
+        analyser.newData(w_global, n_nodes)         
 
         #Defensive Programming:
         if True in np.isnan(w_global):

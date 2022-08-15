@@ -3,7 +3,6 @@ import pickle, struct, socket, math
 import random
 
 
-
 def get_even_odd_from_one_hot_label(label):
     for i in range(0, len(label)):
         if label[i] == 1:
@@ -64,8 +63,6 @@ def get_indices_each_node_case(n_nodes, maxCase, label_list):
         for j in range(0, maxCase):
             indices_each_node_case[j].append([])
     
-    print(len(indices_each_node_case))
-
     # indices_each_node_case is a big list that contains N-number of sublists. Sublist n contains the indices that should be assigned to node n
 
     min_label = min(label_list)
@@ -120,7 +117,6 @@ def get_indices_each_node_case(n_nodes, maxCase, label_list):
 
         # Non IID data close to practise, one malicious node has 
                 # case 2
-        print("CHECK POINT")
         even_distributed_nodes = n_nodes - 1
         tmp_target_node = int((label_list[i] - min_label) % even_distributed_nodes)
         if even_distributed_nodes > num_labels:
@@ -134,11 +130,9 @@ def get_indices_each_node_case(n_nodes, maxCase, label_list):
         indices_each_node_case[4][tmp_target_node].append(i)
         #Shuffle before handing it out to make sue some kind of change is happening!
     
-    print("Before assignment, print node 5", indices_each_node_case[4][n_nodes-1])
     
     #OUTSIDE OF LOOP OF NODES
     indices_each_node_case[4][n_nodes-1] = indices_each_node_case[4][n_nodes-5]
-    print("Equal or not Queal?", np.array_equal(indices_each_node_case[4][n_nodes-1], indices_each_node_case[4][n_nodes-1])) #Manually last node is the same as node before
     random.shuffle(indices_each_node_case[4][n_nodes-1])
 
         # Case 5 just shuffel to have different combinations

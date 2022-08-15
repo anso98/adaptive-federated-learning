@@ -1,21 +1,25 @@
 #Config 
 
+#Server
+#++++++++++++++++++++++++++++++++++++++++++++++++++#
 # RMI Data
 SERVER_ADDR= 'localhost'   # When running in a real distributed setting, change to the server's IP address
 SERVER_PORT = 51000
 
-# Model, dataset, and control parameter configurations for MNIST with CNN
+#Model and Dataset
+#++++++++++++++++++++++++++++++++++++++++++++++++++#
+# Three dataset options:
+#A
 # dataset = 'MNIST_ORIG_ALL_LABELS'  # Use for CNN model
 # model_name = 'ModelCNNMnist'
 
-# Model, dataset, and control parameter configurations for CIFAR-10 with CNN
+#B
 #dataset = 'CIFAR_10'
 #model_name = 'ModelCNNCifar10'
 
+#C
 model_name = 'ModelSVMSmooth'
 dataset = "MNIST_ORIG_EVEN_ODD"
-
-type_malicious = "bool_switch" #Options:"bool_switch", "unvalid_0to9", "random_0to9", "unvalid_bool"
 
 # Model Data
 batch_size = 100  # 100  # Value for stochastic gradient descent
@@ -23,34 +27,59 @@ total_data = 30000  # 60000  #Value for stochastic gradient descent
 step_size = 0.01 #0.01 before
 dataset_file_path = "/Users/Anso/Code/Imperial_College/IndividualProject/adaptive-federated-learning/datasets"
 
-#SELECT HOW TO STORE (BIG VS SMALL MODEL:)
-storing_type = "date" #Options: "date" -> with date automatically, else: whatever you put as a string there!!!
 
+#General Parameter
+#++++++++++++++++++++++++++++++++++++++++++++++++++#
+storing_type = "date" #Options: "date" -> with date automatically, else: whatever you put as a string there!!!
 
 n_nodes = 5  # Specifies the total number of clients
 MAX_CASE = 5  # Specifies the maximum number of cases, this should be a constant equal to 4 
-case_to_use = 4 # OLD: case = 1 use second case
+case_to_use = 0 # OLD: case = 1 use second case
 max_rounds = 500
 
+
+#Detection Tool activate / Deactivate and decide for parameter
+#++++++++++++++++++++++++++++++++++++++++++++++++++#
+# TOOL FOR DETECTION; how many rounds to store
+detection_system_activated = False
+rounds_to_store = max_rounds
+threshold = 3
+
+
+# Type of Maliciousness & Moving Average
+#++++++++++++++++++++++++++++++++++++++++++++++++++#
+#Change depending on model:
+type_malicious = "bool_switch" #Options:"bool_switch", "unvalid_0to9", "random_0to9", "unvalid_bool"
+
+#Variable definition for analysis
+moving_average_of = 25
+percentage_of_weights_concidered_lim_case = 0.01
+
+# Time Frame of which a client is malicious
+#++++++++++++++++++++++++++++++++++++++++++++++++++#
+#Manually need to switch this up!
+percentage_round_where_clients_turn_malicious = 0 #can be 0 or 0.3 or 0.6
+percentage_round_where_clients_turn_healthy_again = 1 # can be 1 = never or 0.3 or 0.6
+
+
+#Decide if full analysis and create parameters if not
+#++++++++++++++++++++++++++++++++++++++++++++++++++#
 full_analysis_all_cases = True #change to false if you manually want to test a single case or change something else -- this is for the analysis of malicious data
 
 # IF NOT FULL ANALYSIS; USE THOSE MODEL PARAMETERS:
 # Maliciousness
-percentage_of_malicious_nodes_config = 1
+percentage_of_malicious_nodes_config = 0.2
 # cases in analysis: 0, 0.2, 0.4, 0.6, 0.8, 1
-percentage_malicious_data_config = 0.4
+percentage_malicious_data_config = 1
 # cases in analysis: 0.2, 0.4, 0.6, 0.8, 1
-case_no_for_analysis_config = 0 # specify which case you want to do is!
+case_no_for_analysis_config = 5 # specify which case you want to do is!
 
+# THIS IS FOR FULL ANALYSIS: 
 #IMPORTANT' THIS IS HARDCODED; CHANGE IF NUMBER OF CASES CHANGES
-
 list_percentages_data_cases = [0.2, 0.4, 0.6, 0.8, 1]
 list_percentages_node_cases = [0, 0.2, 0.4, 0.6, 0.8, 1]
 highest_case = 25
 
-#Manually need to switch this up!
-percentage_round_where_clients_turn_malicious = 0 #can be 0 or 0.3 or 0.6
-percentage_round_where_clients_turn_healthy_again = 1 # can be 1 = never or 0.3 or 0.6
 
 def basic_analysis_cases(previous_case):
 
