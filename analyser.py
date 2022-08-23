@@ -66,7 +66,7 @@ class Analayser:
         for i in range(0, n_nodes):
             self.node_updates[i] = False
 
-        #DEPENDING ON IF I NEED TO RUN A MODEL OVERNIGHT!
+        #DEPENDING ON IF I NEED TO RUN A MODEL OVERNIGHT - to be defined in config file!
         if storing_type == "date":
             current_directory = os. getcwd() 
             day_time = (datetime.today().strftime('%Y-%m-%d') + ': ' + str(self.highest_case) +' cases/')
@@ -153,7 +153,7 @@ class Analayser:
         
         self.mean_weight_per_round[self.round_tracker] /= (self.number_of_nodes)
 
-        # here create standard diviation -- PLEASE CHECK CALCULATION!
+        # here create standard diviation
         temp_all_distances = 0
         for i in range(0, self.number_of_nodes):
             temp_all_distances += ((self.aggregated_weights[i][self.round_tracker] - self.mean_weight_per_round[self.round_tracker]) ** 2)
@@ -441,13 +441,8 @@ class Analayser:
         ###### FOR MEASURING TIME CONTINUE HERE; UNCOMMENT 
 
         ####################
-        #Relative MSE Calculation # Divide by MEDIAN !! OTHER IDEA
+        #Relative MSE Calculation # Divide by MEDIAN !!
         ####################
-
-        # IDEA NO 4 (Relative Squared Error):
-        # Divide MSE by square of the difference between data point and the mean of all errors?
-        # WHY is this not working?
-        # Next try: make the median instead of the mean!!
 
         #median version!
         array_median_error_all_nodes = np.zeros((self.max_rounds))
@@ -582,16 +577,6 @@ class Analayser:
         ####################
         #Relative MSE Calculation # Divide by mean
         ####################
-
-        # WHICH ONES DO I WANT TO TRY:
-        # 1. Divide array_with_accum_mse with mean error of all nodes 
-
-        # 2. Divide array_with_accum_mse with square of difference between data point and the mean of all errors
-
-        # Question: does it make more sense with dividing before taking the average rather than taking first the average and then dividing?
-
-        # Try to create the mean difference accross all of them 
-        # IDEA no 3!
         
         array_mean_error_all_nodes = np.zeros((self.max_rounds))
 
@@ -722,10 +707,6 @@ class Analayser:
         #WITH LESS WEIGHTS ANALYSIS!!!
         ###############################################################
 
-        # Choose weights! 
-        # Should I select the mean weights or the total biggest weights?
-        # Probably the mean? 
-
         time_lim_weights =[]
         time_lim_weights.append(time.time()) #0
 
@@ -752,28 +733,26 @@ class Analayser:
         print("Len all means", len(save_all_means))
         for row in range(len(save_all_means)):
             #indicies_larges_weights[row] = save_all_means[row].argsort()[::-1][:number_of_weights_concidered] #note ::-1 means: starts from the end towards the first taking each element.
-            #Maybe instead:
     
             indicies_sorted[row] = save_all_means[row].argsort()[::-1]
 
             beginning_counter = 0 
-            end_counter = self.number_of_parameters - 1 # maybe -1 not sure?
-            #print(save_all_means[row][int(indicies_sorted[row][beginning_counter])])
+            end_counter = self.number_of_parameters - 1 
+
             for i in range(0, number_of_weights_concidered):
                 if(abs(save_all_means[row][int(indicies_sorted[row][beginning_counter])]) > abs(save_all_means[row][int(indicies_sorted[row][end_counter])])):
                     indicies_larges_weights[row][i] = indicies_sorted[row][beginning_counter]
-                    #print(save_all_means[row][int(indicies_sorted[row][beginning_counter])])
                     beginning_counter += 1
                 else:
                     indicies_larges_weights[row][i] = indicies_sorted[row][end_counter]
-                    #print(save_all_means[row][int(indicies_sorted[row][end_counter])])
                     end_counter -= 1
-
 
 
         print("Shape Indicies largest weights", indicies_larges_weights.shape)
 
-        # # COMMENT OUT IF NOT NEEDED! 
+        # ---- COMMENTED OUT ------
+        # Version, where the weights are not chosen in every round, but only after x number of rounds! -> not a focus of this project
+
         # # Make case that I am not changing this every time but only if we have x number of rounds! try with one weight after round 10:
 
         # for row in range(0, 11):
@@ -789,9 +768,6 @@ class Analayser:
 
         time_lim_weights.append(time.time()) #2
         print("Time biggest indices:", time_lim_weights[2]-time_lim_weights[1])
-
-        # Maybe I can do this for one round and then keep it for the next 15 rounds or so?
-        # maybe decide for global model which one to take?
 
         array_with_mse = np.zeros((self.number_of_nodes, self.max_rounds, number_of_weights_concidered))
         array_with_accum_mse = np.zeros((self.number_of_nodes, self.max_rounds))
@@ -1085,10 +1061,6 @@ class Analayser:
             csv.write('\n')
             csv.close()   
 
-
-         
-
-
         ####################
         # Call all Cases Analysis if it ran through!
         ####################
@@ -1097,4 +1069,4 @@ class Analayser:
             # THIS IS HARDCODED RIGHT NOW; CHANGE POTENTIALLY!
             all_cases_analysis(self.folder_for_csv, self.highest_case, self.round_tracker, self.number_of_nodes)
 
-        return
+        return self.folder_for_csv

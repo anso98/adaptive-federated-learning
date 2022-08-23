@@ -1,17 +1,29 @@
 #Config 
 
-#Server
+# Information: This config file enables to set the settings for this environment. 
+# It is split in the following sections: 
+# 1. Server - Network settings
+# 2. Model and Dataset - Choosing the dataset and model, as well as batch size, learning rate and datset file
+# 3. General Parameter - Including how many nodes, how many update rounds and which data distribution we should choose
+# 4. Detection Tool - Activate detection tool and put settings as required
+# 5. Analysis parameter - which moving average, which lim weights and what the folder name should be to store 
+# 6. Type of Maliciousness
+# 7. Time Frame of maliciousness
+# 8. Full runthrough vs single case
+# 9. Amount of malicious nodes and malicious data 
+
+#1. Server
 #++++++++++++++++++++++++++++++++++++++++++++++++++#
 # RMI Data
 SERVER_ADDR= 'localhost'   # When running in a real distributed setting, change to the server's IP address
-SERVER_PORT = 51000
+SERVER_PORT = 52000
 
-#Model and Dataset
+#2. Model and Dataset
 #++++++++++++++++++++++++++++++++++++++++++++++++++#
 # Three dataset options:
 #A
-# dataset = 'MNIST_ORIG_ALL_LABELS'  # Use for CNN model
-# model_name = 'ModelCNNMnist'
+#dataset = 'MNIST_ORIG_ALL_LABELS'  # Use for CNN model
+#model_name = 'ModelCNNMnist'
 
 #B
 #dataset = 'CIFAR_10'
@@ -28,9 +40,8 @@ step_size = 0.01 #0.01 before
 dataset_file_path = "/Users/Anso/Code/Imperial_College/IndividualProject/adaptive-federated-learning/datasets"
 
 
-#General Parameter
+#3. General Parameter
 #++++++++++++++++++++++++++++++++++++++++++++++++++#
-storing_type = "date" #Options: "date" -> with date automatically, else: whatever you put as a string there!!!
 
 n_nodes = 5  # Specifies the total number of clients
 MAX_CASE = 5  # Specifies the maximum number of cases, this should be a constant equal to 4 
@@ -38,33 +49,42 @@ case_to_use = 0 # OLD: case = 1 use second case
 max_rounds = 500
 
 
-#Detection Tool activate / Deactivate and decide for parameter
+# 4. Detection Tool activate / deactivate and decide for parameter
 #++++++++++++++++++++++++++++++++++++++++++++++++++#
 # TOOL FOR DETECTION; how many rounds to store
 detection_system_activated = False
 rounds_to_store = max_rounds
-threshold = 3
+threshold = 1.5
+percentage_of_parameters_to_include = 1
 
-
-# Type of Maliciousness & Moving Average
+# 5. Analysis parameter
 #++++++++++++++++++++++++++++++++++++++++++++++++++#
-#Change depending on model:
-type_malicious = "bool_switch" #Options:"bool_switch", "unvalid_0to9", "random_0to9", "unvalid_bool"
+storing_type = "date" #Options: "date" -> with date automatically, else: whatever you put as a string there!!! --> important: when long models are run which run more than 1 day, you cannot use date, as it will put the results in different folders!
 
 #Variable definition for analysis
 moving_average_of = 25
 percentage_of_weights_concidered_lim_case = 0.01
 
-# Time Frame of which a client is malicious
+
+# 6. Type of Maliciousness
+#++++++++++++++++++++++++++++++++++++++++++++++++++#
+#Change depending on model:
+type_malicious = "bool_switch" #Options:"bool_switch", "unvalid_0to9", "random_0to9", "unvalid_bool"
+
+
+# 7. Time Frame of maliciousness
 #++++++++++++++++++++++++++++++++++++++++++++++++++#
 #Manually need to switch this up!
-percentage_round_where_clients_turn_malicious = 0 #can be 0 or 0.3 or 0.6
+percentage_round_where_clients_turn_malicious = 0.95 #can be 0 or 0.3 or 0.6
 percentage_round_where_clients_turn_healthy_again = 1 # can be 1 = never or 0.3 or 0.6
 
 
-#Decide if full analysis and create parameters if not
+# 8. Full runthrough vs single case
 #++++++++++++++++++++++++++++++++++++++++++++++++++#
 full_analysis_all_cases = True #change to false if you manually want to test a single case or change something else -- this is for the analysis of malicious data
+
+# 9. Amount of malicious nodes and malicious data 
+#++++++++++++++++++++++++++++++++++++++++++++++++++#
 
 # IF NOT FULL ANALYSIS; USE THOSE MODEL PARAMETERS:
 # Maliciousness

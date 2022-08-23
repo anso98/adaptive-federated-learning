@@ -189,6 +189,7 @@ def all_cases_analysis(folder_for_csv, highest_case, update_rounds,n_nodes):
     plt.xlabel("Share of Malicious Data (in %)", fontsize = 14)
     plt.ylabel("Loss", fontsize = 14)
     plt.xticks(fontsize=14)
+    plt.ylim([0, 1])
     plt.yticks(fontsize=14)
         #LEGEND
     plt.legend(title='% of malicious nodes',title_fontsize=16,loc='center left', bbox_to_anchor=(1, 0.5), prop={"size":14}, frameon = False)
@@ -506,11 +507,13 @@ if __name__ == "__main__":
     current_directory = os. getcwd() 
     day_time = (datetime.today().strftime('%Y-%m-%d') + ': ' + str(highest_case) +' cases/')
     folder_for_csv = os.path.join(current_directory, 'analysis_results/' + day_time)
-    rounds = 200
+    rounds = 500
     n_nodes = 5
     #path = '/Users/Anso/Code/Imperial_College/IndividualProject/adaptive-federated-learning/analysis_results/2022-07-12: 25 cases/'
     path = '/Users/Anso/Code/Imperial_College/IndividualProject/adaptive-federated-learning/analysis_results/2022-07-18: 25 cases -- 2 -CASENUM 0/overall_analysis'
     path_10_nodes = '/Users/Anso/Code/Imperial_College/IndividualProject/adaptive-federated-learning/analysis_results/2022-07-19: 25 cases -- 1/overall_analysis'
     pathy_nodes = '/Users/Anso/Code/Imperial_College/IndividualProject/adaptive-federated-learning/analysis_results/2022-07-30: 25 cases -- malicious round 75-120/overall_analysis'
     path_non_binary = '/Users/Anso/Code/Imperial_College/IndividualProject/adaptive-federated-learning/analysis_results/non_binary_mnist_results/overall_analysis'
-    all_cases_analysis(path_non_binary, highest_case, rounds, n_nodes)
+    pathCNN = '/Users/Anso/Code/Imperial_College/IndividualProject/adaptive-federated-learning/analysis_results/2022-08-15: 25 cases - CNN MNIST REPORT/overall_analysis'
+    pathunivalid = '/Users/Anso/Code/Imperial_College/IndividualProject/adaptive-federated-learning/analysis_results/2022-08-21: 25 cases -- invalid data SVM MNIST REPORT/overall_analysis'
+    all_cases_analysis(pathunivalid, highest_case, rounds, n_nodes)

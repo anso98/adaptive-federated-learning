@@ -62,6 +62,8 @@ try:
         train_image, train_label, _, _, _ = get_data(dataset, total_data, dataset_file_path)
 
         # Prepare Data in Batch
+        # TEST 
+        random.shuffle(indices_this_node)
         sim = 1 #just for now, find out what it is
         sampler = MinibatchSampling(indices_this_node, batch_size, sim)
 

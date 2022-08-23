@@ -8,11 +8,10 @@ from detectionTool import MaliciousUserDetection
 import socket
 import numpy as np
 
-#import tensorflow.compat.v1 as tf
-#tf.disable_v2_behavior()
+# Initalisation of technical setup
+#--------------------------------------------------------------------#
 
 # Establish a connection to all clients
-
 #Open port
 listening_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 listening_sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
@@ -29,24 +28,23 @@ while len(client_sock_all) < n_nodes:
 
     client_sock_all.append(client_sock)
 
-
 # Get Data
 train_image, train_label, test_image, test_label, train_label_orig = get_data(dataset, total_data, dataset_file_path)
 
-# Get Indices for Clients -> will now always be same - is that good or bad?
+# Get Indices for Clients
 indices_each_node_case = get_indices_each_node_case(n_nodes, MAX_CASE, train_label_orig)
 
-#Question: is the model just the model, does not learn, only thing stored is w?
 # Get Model
 model = get_model(model_name)
 if hasattr(model, 'create_graph'):
     model.create_graph(learning_rate=step_size)
 
-
 # Initialise loop variable 
 execute_next_case = True
 case = -1  #define invalid starting case -> will be updated in next line!
 
+# Starting a case
+#--------------------------------------------------------------------#
 
 while(execute_next_case):
 
@@ -58,7 +56,6 @@ while(execute_next_case):
     else:
         execute_next_case = False
         case = case_no_for_analysis_config #comes from Config File, set there
-        # THINK ABOUT HOW TO DO IT IF ITS NOT A CASE; MAYBE DO NOT DEFINE? BUT DOES NOT WORK AS ITS INPUT FOR FUNCTIONS
         percentage_of_malicious_nodes = percentage_of_malicious_nodes_config
         percentage_malicious_data = percentage_malicious_data_config
 
@@ -76,7 +73,6 @@ while(execute_next_case):
     w_global = w_global_init
 
     print("size w: ", len(w_global))
-    # Q: do I need this?
     # initalise variables as in server
     w_global_min_loss = None
     loss_min = np.inf
@@ -84,6 +80,7 @@ while(execute_next_case):
     i_min_loss = 0
 
     #send information to client to initialise!
+    #--------------------------------------------------------------------#
     node_counter = 0
 
     # For Loop for health nodes
@@ -109,6 +106,10 @@ while(execute_next_case):
 
     print(node_counter, "healthy nodes have received initial data for case", case)
 
+    # Identifying in which rounds malicious user become malicious / healthy again
+    round_turning_malicious = percentage_round_where_clients_turn_malicious * max_rounds
+    round_turning_healthy_again = percentage_round_where_clients_turn_healthy_again * max_rounds
+
     # For Loop for malicious nodes
     for n in range(0, number_of_malicious_nodes):
 
@@ -119,8 +120,6 @@ while(execute_next_case):
         # malicious nodes & there percentage of maliciousness
         client_malicious = True
         percentage_of_maliciousness = percentage_malicious_data
-        round_turning_malicious = percentage_round_where_clients_turn_malicious * max_rounds
-        round_turning_healthy_again = percentage_round_where_clients_turn_healthy_again * max_rounds
 
         print("Round turning healthy again", round_turning_healthy_again)
         print("Round turning malicious", round_turning_malicious)
@@ -162,6 +161,9 @@ while(execute_next_case):
 
     print("All confirmation from nodes are received", flush=True)
 
+    #Start Analyser and Detection Tool
+    #--------------------------------------------------------------------#
+    
     #initilise iterator
     iterator = 0
     last_round = False
@@ -172,7 +174,11 @@ while(execute_next_case):
 
     #Start Detection Tool
     if detection_system_activated == True:
-        maliciousUserDetection = MaliciousUserDetection(number_of_parameters, n_nodes, rounds_to_store)
+        maliciousUserDetection = MaliciousUserDetection(number_of_parameters, n_nodes, rounds_to_store, which_node_malicious_array, round_turning_malicious, round_turning_healthy_again)
+
+
+    # Rounds initialisation
+    #--------------------------------------------------------------------#
 
     while True:
 
@@ -207,18 +213,12 @@ while(execute_next_case):
             loss_local_last_global = msg[3]
             number_this_node = msg[4]
 
-            #note: Tiffany did the w_global with the size of the local data (antteilig), I rather would do it equaliy, to test my model later! So changed this! (see in server.py)
-            #w_global += w_local
-            #loss_last_global += loss_local_last_global
-
             # Store w_nodes
             w_nodes[n] = w_local
 
             # Analyser code!
             analyser.newData(w_local, number_this_node)
 
-        #w_global /= n_nodes
-        #analyser.newData(w_global, n_nodes)
         loss_last_global /= n_nodes #FOR what do I need this?
 
         # *--------------------- INSERTED MALCIOUS DETECTION TOOL----------*
@@ -226,12 +226,12 @@ while(execute_next_case):
         # CHECK FOR MALICIOUSNESS - if malicious, then take it out of the equation!
         if detection_system_activated == True: 
             print("DETECTION SYSTEM ACTIVATED")
-            node_classification_healthy = maliciousUserDetection.return_malicious_or_not_malcious( w_nodes, threshold)
+            node_classification_malicious = maliciousUserDetection.return_malicious_or_not_malcious( w_nodes, threshold, moving_average_of, percentage_of_parameters_to_include)
             counter_of_nodes_considered = 0
 
             # PROGRAMMING to take maliciousness 
-            for n in range(0, len(node_classification_healthy)):
-                if node_classification_healthy[n] == True:
+            for n in range(0, len(node_classification_malicious)):
+                if node_classification_malicious[n] == False:
                     w_global += w_nodes[n]
                     counter_of_nodes_considered += 1
         else:
@@ -240,6 +240,9 @@ while(execute_next_case):
                 w_global += w_nodes[n]
             counter_of_nodes_considered = n_nodes
 
+        #Updating global model param after each round & calculate accuracy
+        # ------------------------------------------------------------#
+        
         # Calculating Global w
         print("We considered in total", counter_of_nodes_considered, "nodes")
         w_global /= counter_of_nodes_considered
@@ -262,31 +265,30 @@ while(execute_next_case):
         else:
             prev_loss_is_min = False
 
-        # CHECK WITH TIFFANY THOSE VALUES _ WHY??
         print("Loss of previous global value (from nodes): " + str(loss_last_global))
         print("Minimum loss (from nodes): " + str(loss_min), "in round", i_min_loss)
 
-        #FOR THE MORE COMPLEX MODEL
         # In here evaluate loss and accuracy with test data!
-        #if iterator == 50 or iterator == 100 or iterator == 150 or iterator == 200 or iterator == 250 or iterator == 300 or iterator == 350 or iterator == 400 or iterator == 450 or iterator == 500:
         loss_this_global = model.loss(test_image, test_label, w_global)
         accuracy_this_global = model.accuracy(test_image, test_label, w_global)
-        #else:
-        #    loss_this_global = 0
-        #    accuracy_this_global = 0
 
         analyser.new_loss_accuracy(loss_this_global, accuracy_this_global)
 
         #Iterator +1
         iterator += 1
 
+
         #check for last round
+        #------------------------------------------------------------#
+
         if iterator == max_rounds:
             print('---------------------------------------------------------------------------')
             print('---------------------------------------------------------------------------')
             print(str(iterator) + " iterations have been run through, break connection!")
             print("Case Number", case)
-            analyser.FinalAnalysis()
+            folder_for_csv = analyser.FinalAnalysis()
+            if detection_system_activated == True:
+                maliciousUserDetection.last_round_save_information(folder_for_csv)
             break
 
 
