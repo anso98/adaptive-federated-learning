@@ -2,7 +2,7 @@ import socket
 import struct
 import random
 import numpy as np
-from configAH import *
+from config import *
 from data_reader.data_reader import get_data
 from models.get_model import get_model
 from util.sampling import MinibatchSampling

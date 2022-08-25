@@ -9,7 +9,7 @@ from matplotlib import pyplot as plt
 from datetime import datetime, time
 from all_cases_analyser import *
 import time
-from configAH import storing_type, moving_average_of, percentage_of_weights_concidered_lim_case
+from config import storing_type, moving_average_of, percentage_of_weights_concidered_lim_case
 #from mpmath import mp, mpf
 import textwrap
 

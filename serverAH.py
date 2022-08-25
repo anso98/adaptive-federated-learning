@@ -2,7 +2,7 @@ from analyser import Analayser
 from models.get_model import get_model
 from data_reader.data_reader import get_data
 from util.utils import send_msg, recv_msg, get_indices_each_node_case
-from configAH import *
+from config import *
 from detectionTool import MaliciousUserDetection
 
 import socket

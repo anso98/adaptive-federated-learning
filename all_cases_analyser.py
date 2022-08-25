@@ -8,7 +8,7 @@ import os
 from matplotlib import pyplot as plt
 from datetime import datetime
 from all_cases_analyser import *
-from configAH import get_labeling_of_case, list_percentages_data_cases, list_percentages_node_cases, highest_case, percentage_round_where_clients_turn_malicious, percentage_round_where_clients_turn_healthy_again
+from config import get_labeling_of_case, list_percentages_data_cases, list_percentages_node_cases, highest_case, percentage_round_where_clients_turn_malicious, percentage_round_where_clients_turn_healthy_again
 
 # Function for per value per node array (with 5 cases per node)
 def return_cases_split_by_node(input_highest_case, array, n_nodes):
@@ -516,4 +516,5 @@ if __name__ == "__main__":
     path_non_binary = '/Users/Anso/Code/Imperial_College/IndividualProject/adaptive-federated-learning/analysis_results/non_binary_mnist_results/overall_analysis'
     pathCNN = '/Users/Anso/Code/Imperial_College/IndividualProject/adaptive-federated-learning/analysis_results/2022-08-15: 25 cases - CNN MNIST REPORT/overall_analysis'
     pathunivalid = '/Users/Anso/Code/Imperial_College/IndividualProject/adaptive-federated-learning/analysis_results/2022-08-21: 25 cases -- invalid data SVM MNIST REPORT/overall_analysis'
-    all_cases_analysis(pathunivalid, highest_case, rounds, n_nodes)
+    path_basecase = '/Users/Anso/Code/Imperial_College/IndividualProject/adaptive-federated-learning/analysis_results/2022-08-13: 25 cases -- BASECASE REPORT/overall_analysis'
+    all_cases_analysis(path_basecase, highest_case, rounds, n_nodes)

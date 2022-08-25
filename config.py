@@ -1,105 +1,257 @@
-from util.time_generation import TimeGeneration
-import os
+#Config 
 
+# Information: This config file enables to set the settings for this environment. 
+# It is split in the following sections: 
+# 1. Server - Network settings
+# 2. Model and Dataset - Choosing the dataset and model, as well as batch size, learning rate and datset file
+# 3. General Parameter - Including how many nodes, how many update rounds and which data distribution we should choose
+# 4. Detection Tool - Activate detection tool and put settings as required
+# 5. Analysis parameter - which moving average, which lim weights and what the folder name should be to store 
+# 6. Type of Maliciousness
+# 7. Time Frame of maliciousness
+# 8. Full runthrough vs single case
+# 9. Amount of malicious nodes and malicious data 
+
+#1. Server
+#++++++++++++++++++++++++++++++++++++++++++++++++++#
+# RMI Data
 SERVER_ADDR= 'localhost'   # When running in a real distributed setting, change to the server's IP address
-SERVER_PORT = 51000
+SERVER_PORT = 52000
 
-dataset_file_path = os.path.join(os.path.dirname(__file__), 'datasets')
-results_file_path = os.path.join(os.path.dirname(__file__), 'results')
-single_run_results_file_path = results_file_path + '/SingleRun.csv'
-multi_run_results_file_path = results_file_path + '/MultipleRuns.csv'
+#2. Model and Dataset
+#++++++++++++++++++++++++++++++++++++++++++++++++++#
+# Three dataset options:
+#A
+#dataset = 'MNIST_ORIG_ALL_LABELS'  # Use for CNN model
+#model_name = 'ModelCNNMnist'
 
-# Model, dataset, and control parameter configurations for MNIST with SVM
-dataset = 'MNIST_ORIG_EVEN_ODD'  # Use for SVM model
+#B
+#dataset = 'CIFAR_10'
+#model_name = 'ModelCNNCifar10'
+
+#C
 model_name = 'ModelSVMSmooth'
-control_param_phi = 0.025   # Good for MNIST with smooth SVM
+dataset = "MNIST_ORIG_EVEN_ODD"
 
-# Model, dataset, and control parameter configurations for MNIST with CNN
-# dataset = 'MNIST_ORIG_ALL_LABELS'  # Use for CNN model
-# model_name = 'ModelCNNMnist'
-# control_param_phi = 0.00005   # Good for CNN
+# Model Data
+batch_size = 100  # 100  # Value for stochastic gradient descent
+total_data = 30000  # 60000  #Value for stochastic gradient descent
+step_size = 0.01 #0.01 before
+dataset_file_path = "/Users/Anso/Code/Imperial_College/IndividualProject/adaptive-federated-learning/datasets"
 
-# Model, dataset, and control parameter configurations for CIFAR-10 with CNN
-# dataset = 'CIFAR_10'
-# model_name = 'ModelCNNCifar10'
-# control_param_phi = 0.00005   # Good for CNN
+
+#3. General Parameter
+#++++++++++++++++++++++++++++++++++++++++++++++++++#
 
 n_nodes = 5  # Specifies the total number of clients
-
-moving_average_holding_param = 0.0  # Moving average coefficient to smooth the estimation of beta, delta, and rho
-
-step_size = 0.01
-
-# Setting batch_size equal to total_data makes the system use deterministic gradient descent;
-# Setting batch_size equal < total_data makes the system use stochastic gradient descent.
-# batch_size = 1000  # Value for deterministic gradient descent
-# total_data = 1000  # Value for deterministic gradient descent
-batch_size = 100  # 100  # Value for stochastic gradient descent
-total_data = 60000  # 60000  #Value for stochastic gradient descent
-
-# Choose whether to run a single instance and plot the instantaneous results or
-# run multiple instances and plot average results
-single_run = False
-
-# Choose whether to estimate beta and delta in all runs, including those where tau is not adaptive,
-# this is useful for getting statistics. NOTE: Enabling this may change the communication time when using
-# real-world measurements for resource consumption
-estimate_beta_delta_in_all_runs = False
-
-# If true, the weight corresponding to minimum loss (the loss is estimated if using stochastic gradient descent) is
-# returned. If false, the weight at the end is returned. Setting use_min_loss = True corresponds to the latest
-# theoretical bound for the **DISTRIBUTED** case.
-# For the **CENTRALIZED** case, set use_min_loss = False,
-# because convergence of the final value can be guaranteed in the centralized case.
-use_min_loss = True
-
-# Specifies the number of iterations the client uses the same minibatch, using the same minibatch can reduce
-# the processing time at the client, but may cause a worse model accuracy.
-# We use the same minibatch only when the client receives tau_config = 1
-num_iterations_with_same_minibatch_for_tau_equals_one = 3
-
-# Specifies whether all the data should be read when using stochastic gradient descent.
-# Reading all the data requires much more memory but should avoid slowing down due to file reading.
-read_all_data_for_stochastic = True
-
-MAX_CASE = 4  # Specifies the maximum number of cases, this should be a constant equal to 4
-tau_max = 100  # Specifies the maximum value of tau
-
-# tau_setup = -1 is for the proposed adaptive control algorithm, other values of tau correspond to fixed tau values
-if not single_run:
-    tau_setup_all = [-1, 1, 2, 3, 5, 7, 10, 20, 30, 50, 70, 100]
-    sim_runs = range(0, 2)  #Specifies the simulation seeds in each simulation round
-    case_range = range(0, MAX_CASE)
-else:
-    case_range = [0]   # Change if we want single run with other case, should only have one case
-    tau_setup_all = [-1]   # Should only have one value
-    sim_runs = [0]   # Should only have one value, the value specifies the random seed
+MAX_CASE = 5  # Specifies the maximum number of cases, this should be a constant equal to 4 
+case_to_use = 0 # OLD: case = 1 use second case
+max_rounds = 500
 
 
-max_time = 15  # Total time budget in seconds
+# 4. Detection Tool activate / deactivate and decide for parameter
+#++++++++++++++++++++++++++++++++++++++++++++++++++#
+# TOOL FOR DETECTION; how many rounds to store
+detection_system_activated = False
+rounds_to_store = max_rounds
+threshold = 1.5
+percentage_of_parameters_to_include = 1
 
-# If time_gen is None, use actual measured time. Else, use time generated by the TimeGeneration class.
-# time_gen = None
-# time_gen = TimeGeneration(1, 0.0, 1e-10, 0.0, 0.0, 0.0)
+# 5. Analysis parameter
+#++++++++++++++++++++++++++++++++++++++++++++++++++#
+storing_type = "date" #Options: "date" -> with date automatically, else: whatever you put as a string there!!! --> important: when long models are run which run more than 1 day, you cannot use date, as it will put the results in different folders!
 
-multiply_global = 1.0
-multiply_local = 1.0
+#Variable definition for analysis
+moving_average_of = 25
+percentage_of_weights_concidered_lim_case = 0.01
 
-# These numbers are from measurement on stochastic gradient descent on SVM smooth with MNIST even/odd data.
-time_gen = TimeGeneration(multiply_local * 0.013015156, multiply_local * 0.006946299, 1e-10,
-                          multiply_global * 0.131604348, multiply_global * 0.053873234, 1e-10)
 
-# These numbers are from measurement on CENTRALIZED stochastic gradient descent on SVM smooth with MNIST even/odd data.
-# time_gen = TimeGeneration(multiply_local * 0.009974248, multiply_local * 0.011922926, 1e-10,
-#                           0.0, 0.0, 0.0)
+# 6. Type of Maliciousness
+#++++++++++++++++++++++++++++++++++++++++++++++++++#
+#Change depending on model:
+type_malicious = "bool_switch" #Options:"bool_switch", "unvalid_0to9", "random_0to9", "unvalid_bool"
 
-# These numbers are from measurement on deterministic gradient descent on SVM smooth with MNIST even/odd data.
-# time_gen = []
-# time_gen.append(TimeGeneration(multiply_local * 0.020613052, multiply_local * 0.008154439, 1e-10,
-#                                multiply_global * 0.137093837, multiply_global * 0.05548447, 1e-10))  # Case 1
-# time_gen.append(TimeGeneration(multiply_local * 0.021810727, multiply_local * 0.008042984, 1e-10,
-#                                multiply_global * 0.12322071, multiply_global * 0.048079171, 1e-10))  # Case 2
-# time_gen.append(TimeGeneration(multiply_local * 0.095353094, multiply_local * 0.016688657, 1e-10,
-#                                multiply_global * 0.157255906, multiply_global * 0.066722225, 1e-10))  # Case 3
-# time_gen.append(TimeGeneration(multiply_local * 0.022075891, multiply_local * 0.008528005, 1e-10,
-#                                multiply_global * 0.108598094, multiply_global * 0.044627335, 1e-10))  # Case 4
+
+# 7. Time Frame of maliciousness
+#++++++++++++++++++++++++++++++++++++++++++++++++++#
+#Manually need to switch this up!
+percentage_round_where_clients_turn_malicious = 0.95 #can be 0 or 0.3 or 0.6
+percentage_round_where_clients_turn_healthy_again = 1 # can be 1 = never or 0.3 or 0.6
+
+
+# 8. Full runthrough vs single case
+#++++++++++++++++++++++++++++++++++++++++++++++++++#
+full_analysis_all_cases = True #change to false if you manually want to test a single case or change something else -- this is for the analysis of malicious data
+
+# 9. Amount of malicious nodes and malicious data 
+#++++++++++++++++++++++++++++++++++++++++++++++++++#
+
+# IF NOT FULL ANALYSIS; USE THOSE MODEL PARAMETERS:
+# Maliciousness
+percentage_of_malicious_nodes_config = 0.2
+# cases in analysis: 0, 0.2, 0.4, 0.6, 0.8, 1
+percentage_malicious_data_config = 1
+# cases in analysis: 0.2, 0.4, 0.6, 0.8, 1
+case_no_for_analysis_config = 5 # specify which case you want to do is!
+
+# THIS IS FOR FULL ANALYSIS: 
+#IMPORTANT' THIS IS HARDCODED; CHANGE IF NUMBER OF CASES CHANGES
+list_percentages_data_cases = [0.2, 0.4, 0.6, 0.8, 1]
+list_percentages_node_cases = [0, 0.2, 0.4, 0.6, 0.8, 1]
+highest_case = 25
+
+
+def basic_analysis_cases(previous_case):
+
+    case_no_for_analysis = previous_case + 1
+
+    # Basecase
+    if case_no_for_analysis == 0:
+        case_no_for_analysis = 0
+        percentage_of_malicious_nodes = 0
+        percentage_malicious_data = 0
+    
+    # 1 Node Malicious
+    elif case_no_for_analysis == 1:
+        percentage_of_malicious_nodes = 0.2
+        percentage_malicious_data = 0.2
+    elif case_no_for_analysis == 2:
+        percentage_of_malicious_nodes = 0.2
+        percentage_malicious_data = 0.4
+    elif case_no_for_analysis == 3:
+        percentage_of_malicious_nodes = 0.2
+        percentage_malicious_data = 0.6
+    elif case_no_for_analysis == 4:
+        percentage_of_malicious_nodes = 0.2
+        percentage_malicious_data = 0.8
+    elif case_no_for_analysis == 5:
+        percentage_of_malicious_nodes = 0.2
+        percentage_malicious_data = 1
+
+    # 2 Nodes Malicious
+    elif case_no_for_analysis == 6:
+        percentage_of_malicious_nodes = 0.4
+        percentage_malicious_data = 0.2
+    elif case_no_for_analysis == 7:
+        percentage_of_malicious_nodes = 0.4
+        percentage_malicious_data = 0.4
+    elif case_no_for_analysis == 8:
+        percentage_of_malicious_nodes = 0.4
+        percentage_malicious_data = 0.6
+    elif case_no_for_analysis == 9:
+        percentage_of_malicious_nodes = 0.4
+        percentage_malicious_data = 0.8
+    elif case_no_for_analysis == 10:
+        percentage_of_malicious_nodes = 0.4
+        percentage_malicious_data = 1
+
+    # 3 Nodes Malicious
+    elif case_no_for_analysis == 11:
+        percentage_of_malicious_nodes = 0.6
+        percentage_malicious_data = 0.2
+    elif case_no_for_analysis == 12:
+        percentage_of_malicious_nodes = 0.6
+        percentage_malicious_data = 0.4
+    elif case_no_for_analysis == 13:
+        percentage_of_malicious_nodes = 0.6
+        percentage_malicious_data = 0.6
+    elif case_no_for_analysis == 14:
+        percentage_of_malicious_nodes = 0.6
+        percentage_malicious_data = 0.8
+    elif case_no_for_analysis == 15:
+        percentage_of_malicious_nodes = 0.6
+        percentage_malicious_data = 1
+
+    # 4 Nodes Malicious
+    elif case_no_for_analysis == 16:
+        percentage_of_malicious_nodes = 0.8
+        percentage_malicious_data = 0.2
+    elif case_no_for_analysis == 17:
+        percentage_of_malicious_nodes = 0.8
+        percentage_malicious_data = 0.4
+    elif case_no_for_analysis == 18:
+        percentage_of_malicious_nodes = 0.8
+        percentage_malicious_data = 0.6
+    elif case_no_for_analysis == 19:
+        percentage_of_malicious_nodes = 0.8
+        percentage_malicious_data = 0.8
+    elif case_no_for_analysis == 20:
+        percentage_of_malicious_nodes = 0.8
+        percentage_malicious_data = 1
+
+    # 5 Nodes Malicious
+    elif case_no_for_analysis == 21:
+        percentage_of_malicious_nodes = 1
+        percentage_malicious_data = 0.2
+    elif case_no_for_analysis == 22:
+        percentage_of_malicious_nodes = 1
+        percentage_malicious_data = 0.4
+    elif case_no_for_analysis == 23:
+        percentage_of_malicious_nodes = 1
+        percentage_malicious_data = 0.6
+    elif case_no_for_analysis == 24:
+        percentage_of_malicious_nodes = 1
+        percentage_malicious_data = 0.8
+    elif case_no_for_analysis == 25:
+        percentage_of_malicious_nodes = 1
+        percentage_malicious_data = 1
+
+    return case_no_for_analysis, percentage_of_malicious_nodes, percentage_malicious_data
+
+
+def get_labeling_of_case(casenumber):
+    result = ''
+    if casenumber == 0:
+        return "no malicious node"
+    if casenumber == 1:
+        return "20% mal. nodes (20% mal. data)"
+    if casenumber == 2:
+        return "20% mal. nodes (40% mal. data)"
+    if casenumber == 3:
+        return "20% mal. node (60% mal. data)"
+    if casenumber == 4:
+        return "20% mal. node (80% mal. data)"
+    if casenumber == 5:
+        return "20% mal. node (100% mal. data)"
+    if casenumber == 6:
+        return "40% mal. node (20% mal. data)"
+    if casenumber == 7:
+        return "40% mal. node (40% mal. data)"
+    if casenumber == 8:
+        return "40% mal. node (60% mal. data)"
+    if casenumber == 9:
+        return "40% mal. node (80% mal. data)"
+    if casenumber == 10:
+        return "40% mal. node (100% mal. data)"   
+    if casenumber == 11:
+        return "60% mal. node (20% mal. data)"
+    if casenumber == 12:
+        return "60% mal. node (40% mal. data)"
+    if casenumber == 13:
+        return "60% mal. node (60% mal. data)"
+    if casenumber == 14:
+        return "60% mal. node (80% mal. data)"
+    if casenumber == 15:
+        return "60% mal. node (100% mal. data)" 
+    if casenumber == 16:
+        return "80% mal. node (20% mal. data)"
+    if casenumber == 17:
+        return "80% mal. node (40% mal. data)"
+    if casenumber == 18:
+        return "80% mal. node (60% mal. data)"
+    if casenumber == 19:
+        return "80% mal. node (80% mal. data)"
+    if casenumber == 20:
+        return "80% mal. node (100% mal. data)"    
+    if casenumber == 21:
+        return "100% mal. node (20% mal. data)"
+    if casenumber == 22:
+        return "100% mal. node (40% mal. data)"
+    if casenumber == 23:
+        return "100 mal. node (60% mal. data)"
+    if casenumber == 24:
+        return "100% mal. node (80% mal. data)"
+    if casenumber == 25:
+        return "100% mal. node (100% mal. data)"
+    else:
+        return "Not in range"
