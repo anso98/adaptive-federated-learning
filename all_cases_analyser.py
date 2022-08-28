@@ -259,7 +259,7 @@ def all_cases_analysis(folder_for_csv, highest_case, update_rounds,n_nodes):
     plt.clf() # flushes plt
 
     # ******** comparing all 80% malicious data ********
-    cases_we_want_to_show = [0, 4, 9, 30, 19, 24]
+    cases_we_want_to_show = [0, 4, 9, 16, 19, 24]
     #Use same data as before
 
     # Create Graph for weights

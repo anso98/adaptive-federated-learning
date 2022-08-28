@@ -216,10 +216,10 @@ class Analayser:
                 this_label = "Node " + str(i+1) + " (H)" #start counting by 1
             plt.plot(self.aggregated_weights[i], label = this_label)
         if(self.round_turning_malicious != 0 and self.round_turning_malicious != -1):
-            label_line ='Maliciousness starts'
+            label_line ='M starts'
             plt.axvline(x = self.round_turning_malicious, label=label_line, color = 'black')
         if(self.round_turning_healthy_again != self.max_rounds and self.round_turning_healthy_again != -1):
-            label_line ='Maliciousness ends'
+            label_line ='M ends'
             plt.axvline(x = self.round_turning_healthy_again, label=label_line, color = 'grey')        
             #TITLE
         #plt.title(str(self.percentage_of_malicious_nodes) + "% malicious nodes (" + str(self.percentage_malicious_data*100) + "% malicious data) - " +str(self.number_of_nodes) + " nodes", fontsize = 16)
@@ -245,13 +245,13 @@ class Analayser:
         loss_graph = os.path.join(folder_path, 'loss_graph')
         plt.figure(figsize=(8,6))
         plt.plot(self.loss_per_round, label = "Loss")
-        plt.scatter(self.round_of_min_loss, self.minimum_loss, label = "Minimum \n Loss", color='green') # add min loss
+        #plt.scatter(self.round_of_min_loss, self.minimum_loss, label = "Minimum \n Loss", color='green') # add min loss
             # PLot Temporay maliciousness
         if(self.round_turning_malicious != 0 and self.round_turning_malicious != -1):
-            label_line ='Maliciousness starts'
+            label_line ='M starts'
             plt.axvline(x = self.round_turning_malicious, label=label_line, color = 'black')
         if(self.round_turning_healthy_again != self.max_rounds and self.round_turning_healthy_again != -1):
-            label_line ='Maliciousness ends'
+            label_line ='M ends'
             plt.axvline(x = self.round_turning_healthy_again, label=label_line, color = 'grey')  
             #TITLE
         #plt.title(str(self.percentage_of_malicious_nodes) + "% malicious nodes (" + str(self.percentage_malicious_data*100) + "% malicious data) - " +str(self.number_of_nodes) + " nodes", fontsize = 16)
@@ -273,13 +273,13 @@ class Analayser:
         accuracy_graph = os.path.join(folder_path, 'accuracy_graph')
         plt.figure(figsize=(8,6))
         plt.plot(self.accuracy_per_round, label = "Accuracy")
-        plt.scatter(self.round_of_max_accuracy, self.maximum_accuracy, label = "Maximum \n Accuracy", color='green') # add max accuracy
+        #plt.scatter(self.round_of_max_accuracy, self.maximum_accuracy, label = "Maximum \n Accuracy", color='green') # add max accuracy
             # Plot temporary maliciousnes
         if(self.round_turning_malicious != 0 and self.round_turning_malicious != -1):
-            label_line ='Maliciousness starts'
+            label_line ='M starts'
             plt.axvline(x = self.round_turning_malicious, label=label_line, color = 'black')
         if(self.round_turning_healthy_again != self.max_rounds and self.round_turning_healthy_again != -1):
-            label_line ='Maliciousness ends'
+            label_line ='M ends'
             plt.axvline(x = self.round_turning_healthy_again, label=label_line, color = 'grey')  
             #TITLE
         #plt.title(str(self.percentage_of_malicious_nodes) + "% malicious nodes (" + str(self.percentage_malicious_data*100) + "% malicious data) - " +str(self.number_of_nodes) + " nodes", fontsize = 16)
@@ -373,17 +373,17 @@ class Analayser:
             #PLOTS
         for i in range(0, self.number_of_nodes):
             if(self.which_node_malicious_array[i] == True):
-                this_label = str(i+1) + " (malicious)" #start counting by 1
+                this_label = str(i+1) + " (M)" #start counting by 1
             else:
-                this_label = str(i+1) + " (healthy)" #start counting by 1
+                this_label = str(i+1) + " (H)" #start counting by 1
             fig1 = plt.plot(array_median_relative_mse[i], label = this_label)
                 #plot information of maliciousness
 
         if(self.round_turning_malicious != 0 and self.round_turning_malicious != -1):
-            label_line ='Maliciousness starts'
+            label_line ='M starts'
             plt.axvline(x = self.round_turning_malicious, label=label_line, color = 'black')
         if(self.round_turning_healthy_again != self.max_rounds and self.round_turning_healthy_again != -1):
-            label_line ='Maliciousness starts'
+            label_line ='M starts'
             plt.axvline(x = self.round_turning_healthy_again, label=label_line, color = 'grey')
             #TITLE
         #plt.suptitle("Relative MSE of model parameters accross all nodes (Case " + str(self.case) + ")", fontsize = 30, fontweight = "bold")
@@ -447,16 +447,16 @@ class Analayser:
             #PLOT
         for i in range(0, self.number_of_nodes):
             if(self.which_node_malicious_array[i] == True):
-                this_label = str(i+1) + " (malicious)" #start counting by 1
+                this_label = str(i+1) + " (M)" #start counting by 1
             else:
-                this_label = str(i+1) + " (healthy)" #start counting by 1
+                this_label = str(i+1) + " (H)" #start counting by 1
             plt.plot(y_achsis_array, average_median_relative_mse_accum[i][moving_average_of:], label = this_label)
                 #plot information of maliciousness
         if(self.round_turning_malicious != 0 and self.round_turning_malicious != -1):
-            label_line ='Maliciousness starts'
+            label_line ='M starts'
             plt.axvline(x = self.round_turning_malicious, label=label_line, color = 'black')
         if(self.round_turning_healthy_again != self.max_rounds and self.round_turning_healthy_again != -1):
-            label_line ='Maliciousness ends'
+            label_line ='M ends'
             plt.axvline(x = self.round_turning_healthy_again, label=label_line, color = 'grey')
             #TITLE
         #plt.suptitle("Moving Average (" +str(moving_average_of) + " values) relative MSE of model parameters \n accross all nodes (Case " + str(self.case) + ")", fontsize = 30, fontweight = "bold")
@@ -606,16 +606,16 @@ class Analayser:
             #PLOTS
         for i in range(0, self.number_of_nodes):
             if(self.which_node_malicious_array[i] == True):
-                this_label = str(i+1) + " (malicious)" #start counting by 1
+                this_label = str(i+1) + " (M)" #start counting by 1
             else:
-                this_label = str(i+1) + " (healthy)" #start counting by 1
+                this_label = str(i+1) + " (H)" #start counting by 1
             fig1 = plt.plot(array_median_relative_mse[i], label = this_label)
                 #plot information of maliciousness
         if(self.round_turning_malicious != 0 and self.round_turning_malicious != -1):
-            label_line ='Maliciousness starts'
+            label_line ='M starts'
             plt.axvline(x = self.round_turning_malicious, label=label_line, color = 'black')
         if(self.round_turning_healthy_again != self.max_rounds and self.round_turning_healthy_again != -1):
-            label_line ='Maliciousness ends'
+            label_line ='M ends'
             plt.axvline(x = self.round_turning_healthy_again, label=label_line, color = 'grey')
             #TITLE
         #plt.suptitle("Relative MSE of top abs. " + str(int(percentage_of_weights_concidered_lim_case * 100)) +"% model parameters accross all nodes (Case " + str(self.case) + ")", fontsize = 30, fontweight = "bold")
@@ -681,16 +681,16 @@ class Analayser:
             #PLOT
         for i in range(0, self.number_of_nodes):
             if(self.which_node_malicious_array[i] == True):
-                this_label = str(i+1) + " (malicious)" #start counting by 1
+                this_label = str(i+1) + " (M)" #start counting by 1
             else:
-                this_label = str(i+1) + " (healthy)" #start counting by 1
+                this_label = str(i+1) + " (H)" #start counting by 1
             fig1 = plt.plot(y_achsis_array, average_median_relative_mse_accum[i][moving_average_of:], label = this_label)
                 #plot information of maliciousness
         if(self.round_turning_malicious != 0 and self.round_turning_malicious != -1):
-            label_line ='Maliciousness starts'
+            label_line ='M starts'
             plt.axvline(x = self.round_turning_malicious, label=label_line, color = 'black')
         if(self.round_turning_healthy_again != self.max_rounds and self.round_turning_healthy_again != -1):
-            label_line ='Maliciousness ends'
+            label_line ='M ends'
             plt.axvline(x = self.round_turning_healthy_again, label=label_line, color = 'grey')
             #TITLE
         #plt.suptitle("Moving Average (" +str(moving_average_of) + " values) relative MSE of top abs. " + str(int(percentage_of_weights_concidered_lim_case * 100)) + "% model parameters \n accross all nodes (Case " + str(self.case) + ")", fontsize = 30, fontweight = "bold")
