@@ -5,7 +5,7 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')
 
 from struct import *
 import numpy as np
-from util.utils import get_one_hot_from_label_index
+from util_reused_code.utils import get_one_hot_from_label_index
 
 BYTES_EACH_LABEL = 1
 BYTES_EACH_IMAGE = 3072

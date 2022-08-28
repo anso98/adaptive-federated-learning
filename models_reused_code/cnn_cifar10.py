@@ -2,7 +2,7 @@ import os, sys
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 import tensorflow as tf
-from models.cnn_abstract import ModelCNNAbstract
+from models_reused_code.cnn_abstract import ModelCNNAbstract
 
 def weight_variable(shape):
     initial = tf.truncated_normal(shape, stddev=0.1)
