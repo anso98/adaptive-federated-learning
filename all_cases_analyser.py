@@ -8,7 +8,8 @@ import os
 from matplotlib import pyplot as plt
 from datetime import datetime
 from all_cases_analyser import *
-from config import get_labeling_of_case, list_percentages_data_cases, list_percentages_node_cases, highest_case, percentage_round_where_clients_turn_malicious, percentage_round_where_clients_turn_healthy_again
+from utilsAH.case_labeling import get_labeling_of_case
+from config import list_percentages_data_cases, list_percentages_node_cases, highest_case, percentage_round_where_clients_turn_malicious, percentage_round_where_clients_turn_healthy_again
 
 # Function for per value per node array (with 5 cases per node)
 def return_cases_split_by_node(input_highest_case, array, n_nodes):
@@ -49,80 +50,6 @@ def all_cases_analysis(folder_for_csv, highest_case, update_rounds,n_nodes):
     #-----------------------------------------------------------------------#
     #These are graphs of loss, accuracy, weights min/max/last value between cases
 
-    ############ Maximum Accuracy ############
-
-    # Load Data & create Array for accuracy
-    accuracy_csv = os.path.join(folder_for_csv, 'max_accuracy.csv')
-
-    with open(accuracy_csv, 'r') as csv:
-        all_accuracys = loadtxt(csv ,delimiter = ",")
-        csv.close()
-
-    # Assign for 25 cases (HARDCODED) the data to the different nodes
-    accuracy_array = return_cases_split_by_node(highest_case, all_accuracys, n_nodes)
-    
-    # Create path for Graph 
-    max_accuracy_graph = os.path.join(folder_for_csv, 'max_accuracy_all_cases')
-    
-    # Plot maximum Accuracy
-    # here I want to split by 5, always 5 datas at once!
-    for i in range(0, number_cases_different_no_mali_nodes):
-        this_label = str(round((i/n_nodes)*100, 0)) + "%" 
-        plt.plot(this_list_percentages_data_cases, accuracy_array[i], "-o",label = this_label)
-        #TITLE
-    #plt.suptitle("Maximum accuracy in FL system", fontsize = 18, fontweight="bold")
-    #title =  str(n_nodes) + " nodes, " + str(update_rounds) + " update rounds"
-    #plt.title(title, fontsize = 16)
-        #LABLE
-    plt.xlabel("Share of Malicious Data (in %)", fontsize = 14)
-    plt.ylabel("Accuracy", fontsize = 14)
-    plt.xticks(fontsize=14)
-    plt.yticks(fontsize=14)
-        #LEGEND
-    plt.legend(title='% of malicious nodes',title_fontsize=16,loc='center left', bbox_to_anchor=(1, 0.5), prop={"size":14}, frameon = False)
-        #ADJUST GENERAL
-    plt.subplots_adjust(top=0.85)
-    plt.savefig(max_accuracy_graph, bbox_inches='tight',pad_inches=0.1)
-
-    plt.clf() # flushes plt
-
-    ############ Minimum Loss ############
-
-    # Load Data & create Array for Loss
-    loss_csv = os.path.join(folder_for_csv, 'min_loss.csv')
-
-    with open(loss_csv, 'r') as csv:
-        all_losses = loadtxt(csv ,delimiter = ",")
-        csv.close()
-
-    # Assign for 25 cases (HARDCODED) the data to the different nodes
-    loss_array = return_cases_split_by_node(highest_case, all_losses, n_nodes)
-    
-    # Create path for Graph 
-    min_loss_graph = os.path.join(folder_for_csv, 'min_loss_all_cases')
-    
-    # Plot minimum Loss
-    # here I want to split by 5, always 5 datas at once!
-    for i in range(0, number_cases_different_no_mali_nodes):
-        #this_label = str(i) + " nodes malicious" OLD
-        this_label = str(round((i/n_nodes)*100, 0)) + "%" 
-        plt.plot(this_list_percentages_data_cases, loss_array[i], '-o',label = this_label)
-        #TITLE
-    #plt.suptitle("Minimum loss in FL system", fontsize = 18, fontweight="bold")
-    title =  str(n_nodes) + " nodes, " + str(update_rounds) + " update rounds"
-    #plt.title(title, fontsize = 16)
-        #LABEL
-    plt.xlabel("Share of Malicious Data (in %)", fontsize = 14)
-    plt.ylabel("Loss", fontsize = 14)
-    plt.xticks(fontsize=14)
-    plt.yticks(fontsize=14)
-        #LEGEND
-    plt.legend(title='% of malicious nodes',title_fontsize=16,loc='center left', bbox_to_anchor=(1, 0.5), prop={"size":14}, frameon = False)
-        #ADJUST GENERAL
-    plt.subplots_adjust(top=0.85)
-    plt.savefig(min_loss_graph, bbox_inches='tight',pad_inches=0.1)
-    plt.clf() # flushes plt
-
     ############ Last Accuracy ############
 
     # Load Data & create Array for accuracy
@@ -149,12 +76,12 @@ def all_cases_analysis(folder_for_csv, highest_case, update_rounds,n_nodes):
     #title =  str(n_nodes) + " nodes, " + str(update_rounds) + " update rounds"
     #plt.title(title, fontsize = 16)
         #LABELS
-    plt.xlabel("Share of Malicious Data (in %)", fontsize = 14)
-    plt.ylabel("Accuracy", fontsize = 14)
-    plt.xticks(fontsize=14)
-    plt.yticks(fontsize=14)
+    plt.xlabel("Share of Malicious Data (in %)", fontsize = 30)
+    plt.ylabel("Accuracy", fontsize = 30)
+    plt.xticks(fontsize=30)
+    plt.yticks(fontsize=30)
         #LEGEND
-    plt.legend(title='% of malicious nodes',title_fontsize=16,loc='center left', bbox_to_anchor=(1, 0.5), prop={"size":14}, frameon = False)
+    plt.legend(title='% of malicious nodes',title_fontsize=35,loc='center left', bbox_to_anchor=(1, 0.5), prop={"size":30}, frameon = False)
         #ADJUST GENERAL
     plt.subplots_adjust(top=0.85)
     plt.savefig(last_accuracy_graph, bbox_inches='tight',pad_inches=0.1)
@@ -186,19 +113,18 @@ def all_cases_analysis(folder_for_csv, highest_case, update_rounds,n_nodes):
     #title =  str(n_nodes) + " nodes, " + str(update_rounds) + " update rounds"
     #plt.title(title, fontsize = 16)
         #LABEL
-    plt.xlabel("Share of Malicious Data (in %)", fontsize = 14)
-    plt.ylabel("Loss", fontsize = 14)
-    plt.xticks(fontsize=14)
+    plt.xlabel("Share of Malicious Data (in %)", fontsize = 30)
+    plt.ylabel("Loss", fontsize = 30)
+    plt.xticks(fontsize=30)
     plt.ylim([0, 1])
-    plt.yticks(fontsize=14)
+    plt.yticks(fontsize=30)
         #LEGEND
-    plt.legend(title='% of malicious nodes',title_fontsize=16,loc='center left', bbox_to_anchor=(1, 0.5), prop={"size":14}, frameon = False)
+    plt.legend(title='% of malicious nodes',title_fontsize=35,loc='center left', bbox_to_anchor=(1, 0.5), prop={"size":30}, frameon = False)
         #GENERAL
     plt.subplots_adjust(top=0.85)
     plt.savefig(last_loss_graph, bbox_inches='tight',pad_inches=0.1)
 
     plt.clf() # flushes plt
-
 
     ############ Weight ############
 
@@ -239,23 +165,22 @@ def all_cases_analysis(folder_for_csv, highest_case, update_rounds,n_nodes):
     #title =  str(n_nodes) + " nodes, " + str(update_rounds) + " update rounds"
     #plt.title(title, fontsize = 16)
         #LABLE
-    plt.xlabel("Share of Malicious Data (in %)", fontsize = 14)
-    plt.ylabel("Average Model Parameter", fontsize = 14)
-    plt.xticks(fontsize=14)
-    plt.yticks(fontsize=14)
+    plt.xlabel("Share of Malicious Data (in %)", fontsize = 30)
+    plt.ylabel("Average Model Parameter", fontsize = 30)
+    plt.xticks(fontsize=30)
+    plt.yticks(fontsize=30)
         #LEGEND
-    plt.legend(title='% of malicious nodes',title_fontsize=16,loc='center left', bbox_to_anchor=(1, 0.5), prop={"size":14}, frameon = False)
+    plt.legend(title='% of malicious nodes',title_fontsize=35,loc='center left', bbox_to_anchor=(1, 0.5), prop={"size":30}, frameon = False)
         #GENERAL
     plt.subplots_adjust(top=0.85)
     plt.savefig(av_weight_graph, bbox_inches='tight',pad_inches=0.1)
 
     plt.clf() # flushes plt
 
-
     #-----------------------------------------------------------------------#
     #These are graphs of loss, accuracy, weights min/max/last value between cases across time!
 
-    ############ These are weights for all cases! ############ 
+    ############ These are model parameters for all cases! ############ 
 
     # Read data for weights
     weights_csv = os.path.join(folder_for_csv, 'average_global_model_param_dev.csv')
@@ -286,13 +211,12 @@ def all_cases_analysis(folder_for_csv, highest_case, update_rounds,n_nodes):
     #title =  str(n_nodes) + " nodes, " + str(update_rounds) + " update rounds"
     #plt.title(title, fontsize = 16)
         #LABLE
-    plt.xlabel("Update Rounds", fontsize = 14)
-    plt.ylabel("Average Model Parameter", fontsize = 14)
-    plt.xticks(fontsize=14)
-    plt.yticks(fontsize=14)
+    plt.xlabel("Update Rounds", fontsize = 30)
+    plt.ylabel("Average Model Parameter", fontsize = 30)
+    plt.xticks(fontsize=30)
+    plt.yticks(fontsize=30)
         #LEGEND
-    plt.legend(loc='upper center', bbox_to_anchor=(0.5, -0.15), prop={"size":14}, frameon = False, ncol=3, title='Cases', title_fontsize=16)
-    #plt.legend(title='malicious nodes',title_fontsize=16,loc='center left', bbox_to_anchor=(1, 0.5), prop={"size":14}, frameon = False)
+    plt.legend(loc='upper center', bbox_to_anchor=(0.5, -0.15), prop={"size":30}, frameon = False, ncol=3, title='Cases', title_fontsize=35)
         #GENERAL
     plt.subplots_adjust(top=0.85)
     plt.savefig(weights_graphs, bbox_inches='tight',pad_inches=0.1)
@@ -323,19 +247,19 @@ def all_cases_analysis(folder_for_csv, highest_case, update_rounds,n_nodes):
     #title =  str(n_nodes) + " nodes, " + str(update_rounds) + " update rounds"
     #plt.title(title, fontsize = 16)
         #LABEL
-    plt.xlabel("Update Rounds", fontsize = 14)
-    plt.ylabel("Average Model Parameter", fontsize = 14)
-    plt.xticks(fontsize=14)
-    plt.yticks(fontsize=14)
+    plt.xlabel("Update Rounds", fontsize = 30)
+    plt.ylabel("Average Model Parameter", fontsize = 30)
+    plt.xticks(fontsize=30)
+    plt.yticks(fontsize=30)
         #LEGEND
-    plt.legend(loc='center left', bbox_to_anchor=(1, 0.5), prop={"size":14}, frameon = False, title='Cases', title_fontsize=16)
+    plt.legend(loc='center left', bbox_to_anchor=(1, 0.5), prop={"size":30}, frameon = False, title='Cases', title_fontsize=35)
         #GENERAL
     plt.subplots_adjust(top=0.85)
     plt.savefig(weights_graphs_1, bbox_inches='tight',pad_inches=0.1)
     plt.clf() # flushes plt
 
     # ******** comparing all 80% malicious data ********
-    cases_we_want_to_show = [0, 4, 9, 14, 19, 24]
+    cases_we_want_to_show = [0, 4, 9, 30, 19, 24]
     #Use same data as before
 
     # Create Graph for weights
@@ -357,12 +281,12 @@ def all_cases_analysis(folder_for_csv, highest_case, update_rounds,n_nodes):
     #title =  str(n_nodes) + " nodes, " + str(update_rounds) + " update rounds"
     #plt.title(title, fontsize = 16)
         #LABEL
-    plt.xlabel("Update Rounds", fontsize = 14)
-    plt.ylabel("Average Model Parameter", fontsize = 14)
-    plt.xticks(fontsize=14)
-    plt.yticks(fontsize=14)
+    plt.xlabel("Update Rounds", fontsize = 30)
+    plt.ylabel("Average Model Parameter", fontsize = 30)
+    plt.xticks(fontsize=30)
+    plt.yticks(fontsize=30)
         #LEGEND
-    plt.legend(loc='center left', bbox_to_anchor=(1, 0.5), prop={"size":14}, frameon = False, title='Cases', title_fontsize=16)
+    plt.legend(loc='center left', bbox_to_anchor=(1, 0.5), prop={"size":30}, frameon = False, title='Cases', title_fontsize=35)
         #GENERAL
     plt.subplots_adjust(top=0.85)
     plt.savefig(weights_graphs_2, bbox_inches='tight',pad_inches=0.1)
@@ -391,12 +315,12 @@ def all_cases_analysis(folder_for_csv, highest_case, update_rounds,n_nodes):
     #title =  str(n_nodes) + " nodes, " + str(update_rounds) + " update rounds"
     #plt.title(title, fontsize = 16)
         #LABEL
-    plt.xlabel("Update Rounds", fontsize = 14)
-    plt.ylabel("Average Model Parameter", fontsize = 14)
-    plt.xticks(fontsize=14)
-    plt.yticks(fontsize=14)
+    plt.xlabel("Update Rounds", fontsize = 30)
+    plt.ylabel("Average Model Parameter", fontsize = 30)
+    plt.xticks(fontsize=30)
+    plt.yticks(fontsize=30)
         #LEGEND
-    plt.legend(loc='center left', bbox_to_anchor=(1, 0.5), prop={"size":14}, frameon = False, title='Cases', title_fontsize=16)
+    plt.legend(loc='center left', bbox_to_anchor=(1, 0.5), prop={"size":30}, frameon = False, title='Cases', title_fontsize=35)
         #GENERAL
     plt.subplots_adjust(top=0.85)
     plt.savefig(weights_graphs_3, bbox_inches='tight',pad_inches=0.1)
@@ -422,8 +346,6 @@ def all_cases_analysis(folder_for_csv, highest_case, update_rounds,n_nodes):
     array_in_2d_list_show = [value * n_nodes for value in cases_we_want_to_show]
     array_node_5_2d_list_show = [value + node_we_want_to_show for value in array_in_2d_list_show]
 
-    print("these are the two weights we are showing, the numbers", array_node_5_2d_list_show)
-
     # Create Folder
     weights_per_node_graphs = os.path.join(folder_for_csv, 'model_param_node_5_malicious_vs_healthy_state')
 
@@ -438,12 +360,12 @@ def all_cases_analysis(folder_for_csv, highest_case, update_rounds,n_nodes):
     #title =  str(n_nodes) + " nodes, " + str(update_rounds) + " update rounds"
     #plt.title(title, fontsize = 16)
         #LABEL
-    plt.xlabel("Update Rounds", fontsize = 14)
-    plt.ylabel("Average Model Parameter", fontsize = 14)
-    plt.xticks(fontsize=14)
-    plt.yticks(fontsize=14)
+    plt.xlabel("Update Rounds", fontsize = 30)
+    plt.ylabel("Average Model Parameter", fontsize = 30)
+    plt.xticks(fontsize=30)
+    plt.yticks(fontsize=30)
         #LEGEND
-    plt.legend(loc='center left', bbox_to_anchor=(1, 0.5), prop={"size":14}, frameon = False, title='Cases', title_fontsize=16)
+    plt.legend(loc='center left', bbox_to_anchor=(1, 0.5), prop={"size":30}, frameon = False, title='Cases', title_fontsize=35)
         #GENERAL
     plt.subplots_adjust(top=0.8)
     plt.savefig(weights_per_node_graphs, bbox_inches='tight',pad_inches=0.1)
@@ -487,12 +409,12 @@ def all_cases_analysis(folder_for_csv, highest_case, update_rounds,n_nodes):
     #title =  str(n_nodes) + " nodes, " + str(update_rounds) + " update rounds"
     #plt.title(title, fontsize = 16)
         #LABEL
-    plt.xlabel("Update Rounds", fontsize = 14)
-    plt.ylabel("Average Model Parameter", fontsize = 14)
-    plt.xticks(fontsize=14)
-    plt.yticks(fontsize=14)
+    plt.xlabel("Update Rounds", fontsize = 30)
+    plt.ylabel("Average Model Parameter", fontsize = 30)
+    plt.xticks(fontsize=30)
+    plt.yticks(fontsize=30)
         #LEGEND
-    plt.legend(loc='center left', bbox_to_anchor=(1, 0.5), prop={"size":14}, frameon = False, title='Cases', title_fontsize=16)
+    plt.legend(loc='center left', bbox_to_anchor=(1, 0.5), prop={"size":30}, frameon = False, title='Cases', title_fontsize=35)
         #GENERAL
     plt.subplots_adjust(top=0.8)
     plt.savefig(weights_per_node_graphs, bbox_inches='tight',pad_inches=0.1)
@@ -509,12 +431,5 @@ if __name__ == "__main__":
     folder_for_csv = os.path.join(current_directory, 'analysis_results/' + day_time)
     rounds = 500
     n_nodes = 5
-    #path = '/Users/Anso/Code/Imperial_College/IndividualProject/adaptive-federated-learning/analysis_results/2022-07-12: 25 cases/'
-    path = '/Users/Anso/Code/Imperial_College/IndividualProject/adaptive-federated-learning/analysis_results/2022-07-18: 25 cases -- 2 -CASENUM 0/overall_analysis'
-    path_10_nodes = '/Users/Anso/Code/Imperial_College/IndividualProject/adaptive-federated-learning/analysis_results/2022-07-19: 25 cases -- 1/overall_analysis'
-    pathy_nodes = '/Users/Anso/Code/Imperial_College/IndividualProject/adaptive-federated-learning/analysis_results/2022-07-30: 25 cases -- malicious round 75-120/overall_analysis'
-    path_non_binary = '/Users/Anso/Code/Imperial_College/IndividualProject/adaptive-federated-learning/analysis_results/non_binary_mnist_results/overall_analysis'
-    pathCNN = '/Users/Anso/Code/Imperial_College/IndividualProject/adaptive-federated-learning/analysis_results/2022-08-15: 25 cases - CNN MNIST REPORT/overall_analysis'
-    pathunivalid = '/Users/Anso/Code/Imperial_College/IndividualProject/adaptive-federated-learning/analysis_results/2022-08-21: 25 cases -- invalid data SVM MNIST REPORT/overall_analysis'
     path_basecase = '/Users/Anso/Code/Imperial_College/IndividualProject/adaptive-federated-learning/analysis_results/2022-08-13: 25 cases -- BASECASE REPORT/overall_analysis'
     all_cases_analysis(path_basecase, highest_case, rounds, n_nodes)

@@ -67,18 +67,6 @@ class MaliciousUserDetection:
             intermediate_sum /= number_of_weights_concidered
             accum_mse_per_node[k] += intermediate_sum
 
-        # # calculate the MSE and take the average of it 
-        # mse_per_param_per_node = np.zeros((self.n_nodes, self.number_of_parameters))
-        # accum_mse_per_node = np.zeros((self.n_nodes))
-
-        # for k in range(0, self.n_nodes):
-        #     intermediate_sum = 0
-        #     for j in range(0, self.number_of_parameters):
-        #         mse_per_param_per_node[k][j] = (paramater_means[j] - node_param_updates[k][j]) ** 2
-        #         intermediate_sum +=  mse_per_param_per_node[k][j]
-        #     intermediate_sum /= self.number_of_parameters
-        #     accum_mse_per_node[k] += intermediate_sum
-
         # Take the median of the MSE
         array_median_error_all_nodes = np.median(accum_mse_per_node, axis = 0)
         
@@ -89,7 +77,6 @@ class MaliciousUserDetection:
             array_median_relative_mse[k] = accum_mse_per_node[k] / array_median_error_all_nodes
 
         # array_median_relative_mse should have 5 values, print those!!
-        print("Array with median relative mse:", array_median_relative_mse)
 
         #CHECK IF ROUND > NO OF ROUNDS TO STORE
         if (self.round_counter >= self.number_of_rounds_to_store):
@@ -128,7 +115,7 @@ class MaliciousUserDetection:
             else:
                 array_nodes_healthy[i] = 0 #healthy
 
-        print("Array nodes classified as healthy (=0) or malicious (=1)", array_nodes_healthy)
+        print("Array nodes classified as healthy (=0) or malicious (=1):", array_nodes_healthy)
 
         # Temporary background information based on temporary maliciousness
         background_information_which_node_malicious_this_round = []
@@ -142,11 +129,6 @@ class MaliciousUserDetection:
         if(self.round_counter < self.round_turning_malicious or self.round_counter >= self.round_turning_healthy_again):
             for i in range(0,len(background_information_which_node_malicious_this_round)):
                 background_information_which_node_malicious_this_round[i] = 0
-
-        #print("round turning malicious:", self.round_turning_malicious)
-        #print("round turning healthy:", self.round_turning_healthy_again)
-        #print("round counter", self.round_counter)
-        #print("Background information healthy or not", background_information_which_node_malicious_this_round)
 
         #save the information on which nodes are classified wrongly or rightly
         for i in range(0, self.n_nodes):
@@ -200,7 +182,3 @@ class MaliciousUserDetection:
             csv.close()
 
         return
-
-
-
-

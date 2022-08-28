@@ -3,10 +3,10 @@ import struct
 import random
 import numpy as np
 from config import *
-from data_reader.data_reader import get_data
-from models.get_model import get_model
-from util.sampling import MinibatchSampling
-from util.utils import recv_msg, send_msg
+from data_reader_reused_code.data_reader import get_data
+from models_reused_code.get_model import get_model
+from util_reused_code.sampling import MinibatchSampling
+from util_reused_code.utils import recv_msg, send_msg
 
 
 # Connect to server
@@ -102,8 +102,6 @@ try:
             # # ONLY if we are in a round where the client is malicious!! 
             if(client_malicious and total_iterations >= round_turning_malicious and total_iterations < round_turning_healthy_again):
 
-                print("Check I am in malicious indicies creation loop")
-                print("Iteration:", total_iterations)
                 # create a copy and shuffle indicies to maintain randomness
                 randomised_indicies = train_indices
                 random.shuffle(randomised_indicies)

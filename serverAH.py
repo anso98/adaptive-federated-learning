@@ -1,9 +1,11 @@
 from analyser import Analayser
-from models.get_model import get_model
-from data_reader.data_reader import get_data
-from util.utils import send_msg, recv_msg, get_indices_each_node_case
+from models_reused_code.get_model import get_model
+from data_reader_reused_code.data_reader import get_data
+from util_reused_code.utils import send_msg, recv_msg, get_indices_each_node_case
 from config import *
 from detectionTool import MaliciousUserDetection
+#from utilsAH.case_labeling import basic_analysis_cases
+from utilsAH.case_labeling import basic_analysis_cases
 
 import socket
 import numpy as np
@@ -41,7 +43,7 @@ if hasattr(model, 'create_graph'):
 
 # Initialise loop variable 
 execute_next_case = True
-case = -1  #define invalid starting case -> will be updated in next line!
+case = -1  #define invalid starting case - will be updated in next line!
 
 # Starting a case
 #--------------------------------------------------------------------#
@@ -244,7 +246,7 @@ while(execute_next_case):
         # ------------------------------------------------------------#
         
         # Calculating Global w
-        print("We considered in total", counter_of_nodes_considered, "nodes")
+        print("Total nodes considered:", counter_of_nodes_considered)
         w_global /= counter_of_nodes_considered
         analyser.newData(w_global, n_nodes)         
 

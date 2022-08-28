@@ -5,12 +5,12 @@ import sys
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-from util.utils import get_index_from_one_hot_label, get_even_odd_from_one_hot_label
+from util_reused_code.utils import get_index_from_one_hot_label, get_even_odd_from_one_hot_label
 
 def get_data(dataset, total_data, dataset_file_path=os.path.dirname(__file__), sim_round=None):
 
     if dataset == 'MNIST_ORIG_EVEN_ODD' or dataset == 'MNIST_ORIG_ALL_LABELS':
-        from data_reader.mnist_extractor import mnist_extract
+        from data_reader_reused_code.mnist_extractor import mnist_extract
 
         if total_data > 60000:
             total_data_train = 60000
@@ -52,7 +52,7 @@ def get_data(dataset, total_data, dataset_file_path=os.path.dirname(__file__), s
                 test_label[i] = get_even_odd_from_one_hot_label(test_label[i])
 
     elif dataset == 'CIFAR_10':
-        from data_reader.cifar_10_extractor import cifar_10_extract
+        from data_reader_reused_code.cifar_10_extractor import cifar_10_extract
 
         if total_data > 50000:
             total_data_train = 50000
@@ -80,7 +80,7 @@ def get_data(dataset, total_data, dataset_file_path=os.path.dirname(__file__), s
 
 def get_data_train_samples(dataset, samples_list, dataset_file_path=os.path.dirname(__file__)):
     if dataset == 'MNIST_ORIG_EVEN_ODD' or dataset == 'MNIST_ORIG_ALL_LABELS':
-        from data_reader.mnist_extractor import mnist_extract_samples
+        from data_reader_reused_code.mnist_extractor import mnist_extract_samples
 
         train_image, train_label = mnist_extract_samples(samples_list, True, dataset_file_path)
 
@@ -89,7 +89,7 @@ def get_data_train_samples(dataset, samples_list, dataset_file_path=os.path.dirn
                 train_label[i] = get_even_odd_from_one_hot_label(train_label[i])
 
     elif dataset == 'CIFAR_10':
-        from data_reader.cifar_10_extractor import cifar_10_extract_samples
+        from data_reader_reused_code.cifar_10_extractor import cifar_10_extract_samples
 
         train_image, train_label = cifar_10_extract_samples(samples_list, True, dataset_file_path)
 
