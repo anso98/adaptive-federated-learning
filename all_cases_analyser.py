@@ -21,9 +21,9 @@ def return_cases_split_by_node(input_highest_case, array, n_nodes):
 
     #percentages_for_graphs = list_percentages_data_cases[1:number_cases_different_mali_data]
 
-    #Defensive Programming do not allow this if cases != 25
+    #Defensive Programming do not allow this if cases != 30
     if(not input_highest_case == given_highest_case):
-        print("Problem: we don't have 25 cases, adjust the code please!")
+        print("Problem: we don't have 30 cases, adjust the code please!")
         return
     else:
         #make for loop, which is flexible in how many arrays it needs depending on the the number of nodes given! Therefore, input n_nodes and then take the length for it!
@@ -59,7 +59,7 @@ def all_cases_analysis(folder_for_csv, highest_case, update_rounds,n_nodes):
         last_all_accuracys = loadtxt(csv ,delimiter = ",")
         csv.close()
 
-    # Assign for 25 cases (HARDCODED) the data to the different nodes
+    # Assign for 30 cases (HARDCODED) the data to the different nodes
     last_accuracy_array = return_cases_split_by_node(highest_case, last_all_accuracys, n_nodes)
     
     # Create path for Graph 
@@ -78,10 +78,11 @@ def all_cases_analysis(folder_for_csv, highest_case, update_rounds,n_nodes):
         #LABELS
     plt.xlabel("Share of Malicious Data (in %)", fontsize = 30)
     plt.ylabel("Accuracy", fontsize = 30)
-    plt.xticks(fontsize=30)
     plt.yticks(fontsize=30)
+    plt.xticks(np.arange(0.2, 1.2, 0.2), fontsize=30)
+    #plt.ylim([0.85, 0.88])
         #LEGEND
-    plt.legend(title='% of malicious nodes',title_fontsize=35,loc='center left', bbox_to_anchor=(1, 0.5), prop={"size":30}, frameon = False)
+    plt.legend(title='% of malicious nodes',title_fontsize=30,loc='center left', bbox_to_anchor=(1, 0.5), prop={"size":30}, frameon = False)
         #ADJUST GENERAL
     plt.subplots_adjust(top=0.85)
     plt.savefig(last_accuracy_graph, bbox_inches='tight',pad_inches=0.1)
@@ -96,7 +97,7 @@ def all_cases_analysis(folder_for_csv, highest_case, update_rounds,n_nodes):
         all_last_losses = loadtxt(csv ,delimiter = ",")
         csv.close()
 
-    # Assign for 25 cases (HARDCODED) the data to the different nodes
+    # Assign for 30 cases (HARDCODED) the data to the different nodes
     last_loss_array = return_cases_split_by_node(highest_case, all_last_losses, n_nodes)
     
     # Create path for Graph 
@@ -115,11 +116,11 @@ def all_cases_analysis(folder_for_csv, highest_case, update_rounds,n_nodes):
         #LABEL
     plt.xlabel("Share of Malicious Data (in %)", fontsize = 30)
     plt.ylabel("Loss", fontsize = 30)
-    plt.xticks(fontsize=30)
     plt.ylim([0, 1])
     plt.yticks(fontsize=30)
+    plt.xticks(np.arange(0.2, 1.2, 0.2), fontsize=30)
         #LEGEND
-    plt.legend(title='% of malicious nodes',title_fontsize=35,loc='center left', bbox_to_anchor=(1, 0.5), prop={"size":30}, frameon = False)
+    plt.legend(title='% of malicious nodes',title_fontsize=30,loc='center left', bbox_to_anchor=(1, 0.5), prop={"size":30}, frameon = False)
         #GENERAL
     plt.subplots_adjust(top=0.85)
     plt.savefig(last_loss_graph, bbox_inches='tight',pad_inches=0.1)
@@ -141,7 +142,7 @@ def all_cases_analysis(folder_for_csv, highest_case, update_rounds,n_nodes):
         all_last_av_weights = loadtxt(csv ,delimiter = ",")
         csv.close()
 
-    # Assign for 25 cases (HARDCODED) the data to the different nodes
+    # Assign for 30 cases (HARDCODED) the data to the different nodes
     last_av_weights_array = return_cases_split_by_node(highest_case, all_last_av_weights, n_nodes)
     
     # Create path for Graph 
@@ -170,7 +171,7 @@ def all_cases_analysis(folder_for_csv, highest_case, update_rounds,n_nodes):
     plt.xticks(fontsize=30)
     plt.yticks(fontsize=30)
         #LEGEND
-    plt.legend(title='% of malicious nodes',title_fontsize=35,loc='center left', bbox_to_anchor=(1, 0.5), prop={"size":30}, frameon = False)
+    plt.legend(title='% of malicious nodes',title_fontsize=30,loc='center left', bbox_to_anchor=(1, 0.5), prop={"size":30}, frameon = False)
         #GENERAL
     plt.subplots_adjust(top=0.85)
     plt.savefig(av_weight_graph, bbox_inches='tight',pad_inches=0.1)
@@ -216,7 +217,7 @@ def all_cases_analysis(folder_for_csv, highest_case, update_rounds,n_nodes):
     plt.xticks(fontsize=30)
     plt.yticks(fontsize=30)
         #LEGEND
-    plt.legend(loc='upper center', bbox_to_anchor=(0.5, -0.15), prop={"size":30}, frameon = False, ncol=3, title='Cases', title_fontsize=35)
+    plt.legend(loc='upper center', bbox_to_anchor=(0.5, -0.15), prop={"size":30}, frameon = False, ncol=3, title='Cases', title_fontsize=30)
         #GENERAL
     plt.subplots_adjust(top=0.85)
     plt.savefig(weights_graphs, bbox_inches='tight',pad_inches=0.1)
@@ -252,7 +253,7 @@ def all_cases_analysis(folder_for_csv, highest_case, update_rounds,n_nodes):
     plt.xticks(fontsize=30)
     plt.yticks(fontsize=30)
         #LEGEND
-    plt.legend(loc='center left', bbox_to_anchor=(1, 0.5), prop={"size":30}, frameon = False, title='Cases', title_fontsize=35)
+    plt.legend(loc='center left', bbox_to_anchor=(1, 0.5), prop={"size":30}, frameon = False, title='Cases', title_fontsize=30)
         #GENERAL
     plt.subplots_adjust(top=0.85)
     plt.savefig(weights_graphs_1, bbox_inches='tight',pad_inches=0.1)
@@ -286,7 +287,7 @@ def all_cases_analysis(folder_for_csv, highest_case, update_rounds,n_nodes):
     plt.xticks(fontsize=30)
     plt.yticks(fontsize=30)
         #LEGEND
-    plt.legend(loc='center left', bbox_to_anchor=(1, 0.5), prop={"size":30}, frameon = False, title='Cases', title_fontsize=35)
+    plt.legend(loc='center left', bbox_to_anchor=(1, 0.5), prop={"size":30}, frameon = False, title='Cases', title_fontsize=30)
         #GENERAL
     plt.subplots_adjust(top=0.85)
     plt.savefig(weights_graphs_2, bbox_inches='tight',pad_inches=0.1)
@@ -320,7 +321,7 @@ def all_cases_analysis(folder_for_csv, highest_case, update_rounds,n_nodes):
     plt.xticks(fontsize=30)
     plt.yticks(fontsize=30)
         #LEGEND
-    plt.legend(loc='center left', bbox_to_anchor=(1, 0.5), prop={"size":30}, frameon = False, title='Cases', title_fontsize=35)
+    plt.legend(loc='center left', bbox_to_anchor=(1, 0.5), prop={"size":30}, frameon = False, title='Cases', title_fontsize=30)
         #GENERAL
     plt.subplots_adjust(top=0.85)
     plt.savefig(weights_graphs_3, bbox_inches='tight',pad_inches=0.1)
@@ -365,7 +366,7 @@ def all_cases_analysis(folder_for_csv, highest_case, update_rounds,n_nodes):
     plt.xticks(fontsize=30)
     plt.yticks(fontsize=30)
         #LEGEND
-    plt.legend(loc='center left', bbox_to_anchor=(1, 0.5), prop={"size":30}, frameon = False, title='Cases', title_fontsize=35)
+    plt.legend(loc='center left', bbox_to_anchor=(1, 0.5), prop={"size":30}, frameon = False, title='Cases', title_fontsize=30)
         #GENERAL
     plt.subplots_adjust(top=0.8)
     plt.savefig(weights_per_node_graphs, bbox_inches='tight',pad_inches=0.1)
@@ -414,7 +415,7 @@ def all_cases_analysis(folder_for_csv, highest_case, update_rounds,n_nodes):
     plt.xticks(fontsize=30)
     plt.yticks(fontsize=30)
         #LEGEND
-    plt.legend(loc='center left', bbox_to_anchor=(1, 0.5), prop={"size":30}, frameon = False, title='Cases', title_fontsize=35)
+    plt.legend(loc='center left', bbox_to_anchor=(1, 0.5), prop={"size":30}, frameon = False, title='Cases', title_fontsize=30)
         #GENERAL
     plt.subplots_adjust(top=0.8)
     plt.savefig(weights_per_node_graphs, bbox_inches='tight',pad_inches=0.1)
@@ -425,11 +426,14 @@ def all_cases_analysis(folder_for_csv, highest_case, update_rounds,n_nodes):
 
 # PYTHON MAIN!!
 if __name__ == "__main__":
-    highest_case = 25
+    highest_case = 30
     current_directory = os. getcwd() 
     day_time = (datetime.today().strftime('%Y-%m-%d') + ': ' + str(highest_case) +' cases/')
     folder_for_csv = os.path.join(current_directory, 'analysis_results/' + day_time)
     rounds = 500
     n_nodes = 5
     path_basecase = '/Users/Anso/Code/Imperial_College/IndividualProject/adaptive-federated-learning/analysis_results/2022-08-13: 25 cases -- BASECASE REPORT/overall_analysis'
-    all_cases_analysis(path_basecase, highest_case, rounds, n_nodes)
+    path03_06 = '/Users/Anso/Code/Imperial_College/IndividualProject/adaptive-federated-learning/analysis_results/2022-08-13: 25 cases -- time03-06 REPORT/overall_analysis'
+    pathInvalid = '/Users/Anso/Code/Imperial_College/IndividualProject/adaptive-federated-learning/analysis_results/2022-08-21: 25 cases -- invalid data SVM MNIST REPORT/overall_analysis'
+    mnistCNN = '/Users/Anso/Code/Imperial_College/IndividualProject/adaptive-federated-learning/analysis_results/2022-08-15: 25 cases - CNN MNIST REPORT/overall_analysis'
+    all_cases_analysis(mnistCNN, highest_case, rounds, n_nodes)

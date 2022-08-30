@@ -43,7 +43,7 @@ dataset_file_path = "/Users/Anso/Code/Imperial_College/IndividualProject/adaptiv
 #3. General Parameter
 #++++++++++++++++++++++++++++++++++++++++++++++++++#
 
-n_nodes = 5  # Specifies the total number of clients
+n_nodes = 5 # Specifies the total number of clients
 MAX_CASE = 5  # Specifies the maximum number of data cases, this should be a constant equal to 5
 case_to_use = 0 # Specifies which data distribution to choose, case 0 = IID
 max_rounds = 500 #number of update rounds 
@@ -76,7 +76,7 @@ type_malicious = "bool_switch" #Options:"bool_switch", "unvalid_0to9", "random_0
 #++++++++++++++++++++++++++++++++++++++++++++++++++#
 #Manually need to switch this up!
 percentage_round_where_clients_turn_malicious = 0 #can be 0 or 0.3 or 0.6
-percentage_round_where_clients_turn_healthy_again = 0.6 # can be 1 = never or 0.3 or 0.6
+percentage_round_where_clients_turn_healthy_again = 1 # can be 1 = never or 0.3 or 0.6
 
 
 # 8. Full runthrough vs single case
@@ -88,11 +88,11 @@ full_analysis_all_cases = True #change to false if you manually want to test a s
 
 # IF NOT FULL ANALYSIS; USE THOSE MODEL PARAMETERS:
 # Maliciousness
-percentage_of_malicious_nodes_config = 0.2
+percentage_of_malicious_nodes_config = 0.4
 # cases in analysis: 0, 0.2, 0.4, 0.6, 0.8, 1
-percentage_malicious_data_config = 1
+percentage_malicious_data_config = 0.8
 # cases in analysis: 0.2, 0.4, 0.6, 0.8, 1
-case_no_for_analysis_config = 5 # specify which case you want to do is!
+case_no_for_analysis_config = 9 # specify which case you want to do is!
 
 # THIS IS FOR FULL ANALYSIS: 
 #IMPORTANT' THIS IS HARDCODED; CHANGE IF NUMBER OF CASES CHANGES

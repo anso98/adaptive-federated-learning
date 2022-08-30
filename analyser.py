@@ -462,14 +462,15 @@ class Analayser:
         #plt.suptitle("Moving Average (" +str(moving_average_of) + " values) relative MSE of model parameters \n accross all nodes (Case " + str(self.case) + ")", fontsize = 30, fontweight = "bold")
         #plt.title(str(self.percentage_of_malicious_nodes) + "% malicious nodes (" + str(self.percentage_malicious_data*100) + "% malicious data) - " +str(self.number_of_nodes) + " nodes", fontsize = 16, pad = 20)
             #LABLE
-        plt.xlabel("Update Round", fontsize = 30)
+        plt.xlabel("Update Round", fontsize = 20)
         y_label_text = "Relative average MSE of model parameters"
         y_label = textwrap.fill(y_label_text, width=22, break_long_words=False)
-        plt.ylabel(y_label, fontsize = 30)
-        plt.xticks(fontsize=30)
-        plt.yticks(fontsize=30)
+        plt.ylabel(y_label, fontsize = 20)
+        plt.xticks(fontsize=20)
+        plt.yticks(fontsize=20)
             #LEGEND
-        plt.legend(loc='center left', bbox_to_anchor=(1, 0.5), prop={"size":30}, frameon = False, title='Node', title_fontsize=35)
+        plt.legend(loc='center left', bbox_to_anchor=(1, 0.5), prop={"size":20}, frameon = False, title='Node', title_fontsize=20)
+        #plt.legend(loc='center left',  bbox_to_anchor=(1, 0.5), prop={"size":30}, frameon = False, title='Node', title_fontsize=35)
             #GENERAL
         plt.subplots_adjust(top=0.75)
         plt.savefig(median_moving_average_relative_mse_graph, bbox_inches='tight',pad_inches=0.1)
