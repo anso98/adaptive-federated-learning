@@ -1,21 +1,17 @@
-### Adaptive Federated Learning in Resource Constrained Edge Computing Systems
-
-This repository includes source code for the paper S. Wang, T. Tuor, T. Salonidis, K. K. Leung, C. Makaya, T. He, and K. Chan, "Adaptive federated learning in resource constrained edge computing systems," IEEE Journal on Selected Areas in Communications, vol. 37, no. 6, pp. 1205 – 1221, Jun. 2019.
-
-More specifically: all code in the folders util_reused_code, models_reused_code and data_reader_reused_code, as well as the function calls for those functions in the respective folders and the remote procedure calls within serverAH.py and clientAH.py
-
 ### Mitigating Security concerns for Federated Learning 
 
-This repository is part of a MSc Computing Individual Project by Anne-Sophie Hannes. It build upon cornerstones of the Adaptive Federated Learning in Resource Constrained Edge Computing Systems code repository and added functionality by changing it into an malicious Federated Learning enviornment analyis tool.
+This repository is part of a MSc Computing Individual Project by Anne-Sophie Hannes. It build upon cornerstones of the paper S. Wang, T. Tuor, T. Salonidis, K. K. Leung, C. Makaya, T. He, and K. Chan, "Adaptive Federated Learning in Resource Constrained Edge Computing Systems" IEEE Journal on Selected Areas in Communications, vol. 37, no. 6, pp. 1205 – 1221, Jun. 2019 code repository and added functionality by changing it into an malicious Federated Learning enviornment analyis tool.
 
 All code from analyser.py, all_cases_analyser.py, detectionTool.py is original. Almost all parts of the code in serverAh.py, clientAH.py and config.py are original, however small parts have been reused from the original repositories. 
+
+More specifically: all code in the folders util_reused_code, models_reused_code and data_reader_reused_code, as well as the function calls for those functions in the respective folders and the remote procedure calls within serverAH.py and clientAH.py
 
 #### Getting Started
 
 This repository requires Python 3 with Tensorflow version 1 ((>=1.13). 
 If you have already a suitable environment install the dependencies by running: pip3 install -r requirements.txt
 
-Otherwise, a good way to install the environment is using Anaconda:
+Otherwise, install the environment is using Anaconda:
 1. Download anaconda 
 2. Use the following command: `conda create --name env_project python=3.6.13 tensorflow=1.15.0 matplotlib=3.3.4 numpy=1.19.2`
 3. Activate enviornment: `Conda activate evn_project`
@@ -39,8 +35,3 @@ To test the code:
 The folder `analysis_results` contains the results, once a code ran through. It is stored depending on the setup in config file, but the default is storing it under the date. 
 
 Currently, the supported datasets are MNIST and CIFAR-10, and the supported models are SVM and CNN. The code can be extended to support other datasets and models too.  
-
-#### Contributors
-
-Part of this code was written by Shiqiang Wang and Tiffany Tuor.
-The other part, as mentioned above was written by Anne-Sophie Hannes
